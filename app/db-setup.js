@@ -3,16 +3,26 @@ const app = express();
 const con = require('./index').con;
 
 /* table creation statements */
-/* no foreign key constraints below */
+/* NO foreign key constraints below */
 const accountType = "CREATE TABLE IF NOT EXISTS AccountType(Name VARCHAR(255) PRIMARY KEY)";
 const department = "CREATE TABLE IF NOT EXISTS Department(Id SMALLINT AUTO_INCREMENT PRIMARY KEY, Name VARCHAR(255))";
 const grade = "CREATE TABLE IF NOT EXISTS Grade(Name VARCHAR(255) PRIMARY KEY)";
 const instructor = "CREATE TABLE IF NOT EXISTS Instructor(Id INT PRIMARY KEY, Name VARCHAR(255), Email VARCHAR(255) UNIQUE)";
-const pendingStudent = "CREATE TABLE IF NOT EXISTS PendingStudent (\
-                            SSN VARCHAR(9) PRIMARY KEY, \
-                            Name VARCHAR(255), \
-                            Email VARCHAR(255) UNIQUE)";
+// const pendingStudent = "CREATE TABLE IF NOT EXISTS PendingStudent (\
+//                             SSN VARCHAR(9) PRIMARY KEY, \
+//                             Name VARCHAR(255), \
+//                             Email VARCHAR(255) UNIQUE)";
 const semester = "CREATE TABLE IF NOT EXISTS Semester(Name VARCHAR(255) PRIMARY KEY)";
+const currentSemester = "CREATE TABLE IF NOT EXISTS CurrentSemester(\
+                            Name VARCHAR(255), \
+                            Year SMALLINT, \
+                            DateAdded DATETIME PRIMARY KEY DEFAULT CURRENT_TIMESTAMP, \
+                            FOREIGN KEY (Name) REFERENCES Semester(Name))";
+const nextSemester = "CREATE TABLE IF NOT EXISTS NextSemester(\
+                        Name VARCHAR(255), \
+                        Year SMALLINT, \
+                        DateAdded DATETIME PRIMARY KEY DEFAULT CURRENT_TIMESTAMP, \
+                        FOREIGN KEY (Name) REFERENCES Semester(Name))";
 const student = "CREATE TABLE IF NOT EXISTS Student (\
                     Id INT AUTO_INCREMENT PRIMARY KEY, \
                     Name VARCHAR(255), \
@@ -20,8 +30,7 @@ const student = "CREATE TABLE IF NOT EXISTS Student (\
                     Credits SMALLINT, \
                     Registered BOOLEAN, \
                     Probation BOOLEAN, \
-                    SSN VARCHAR(9), \
-                    Age SMALLINT)";
+                    SSN VARCHAR(9))";
 /* foreign key constraints below */
 const course = "CREATE TABLE IF NOT EXISTS Course (\
                     Id INT PRIMARY KEY, \
@@ -49,12 +58,6 @@ const enrollment = "CREATE TABLE IF NOT EXISTS Enrollment (\
                         FOREIGN KEY (ClassId) REFERENCES Class(Id), \
                         FOREIGN KEY (StudentId) REFERENCES Student(Id), \
                         FOREIGN KEY (Grade) REFERENCES Grade(Name))";
-const programAdvisor = "CREATE TABLE IF NOT EXISTS ProgramAdvisor (\
-                            Id INT PRIMARY KEY, \
-                            Name VARCHAR(255), \
-                            Dept SMALLINT, \
-                            Email VARCHAR(255) UNIQUE, \
-                            FOREIGN KEY (Dept) REFERENCES Department(Id))";
 const login = "CREATE TABLE IF NOT EXISTS Login (\
                 Email VARCHAR(255), \
                 Password VARCHAR(255), \
@@ -79,13 +82,14 @@ function createTables(con) {
     createTable(department, "Department", con);
     createTable(grade, "Grade", con);
     createTable(instructor, "Instructor", con);
-    createTable(pendingStudent, "PendingStudent", con);
+    // createTable(pendingStudent, "PendingStudent", con);
     createTable(semester, "Semester", con);
+    createTable(currentSemester, "CurrentSemester", con);
+    createTable(nextSemester, "NextSemester", con);
     createTable(student, "Student", con);
     createTable(course, "Course", con);
     createTable(classSQL, "Class", con);
     createTable(enrollment, "Enrollment", con);
-    createTable(programAdvisor, "ProgramAdvisor", con);
     createTable(login, "Login", con);
 }
 
@@ -110,6 +114,8 @@ function deleteTables(con) {
     deleteTable("DROP TABLE IF EXISTS Class", "Class", con);
     deleteTable("DROP TABLE IF EXISTS Course", "Course", con);
     deleteTable("DROP TABLE IF EXISTS Student", "Student", con);
+    deleteTable("DROP TABLE IF EXISTS NextSemester", "NextSemester", con);
+    deleteTable("DROP TABLE IF EXISTS CurrentSemester", "CurrentSemester", con);
     deleteTable("DROP TABLE IF EXISTS Semester", "Semester", con);
     deleteTable("DROP TABLE IF EXISTS PendingStudent", "PendingStudent", con);
     deleteTable("DROP TABLE IF EXISTS Instructor", "Instructor", con);

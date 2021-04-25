@@ -12,7 +12,8 @@ const db = mysql.createConnection({ // TODO: Akbar, changed to work on my system
     user: 'root',
     password: 'ploop',
     port: '3306',
-    database: 'Collegefulbar'
+    database: 'Collegefulbar',
+    multipleStatements: true
 });
 
 // database connection                              
