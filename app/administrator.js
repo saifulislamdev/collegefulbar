@@ -142,7 +142,6 @@ function createGrade(name, con) {
     });
 }
 
-// TODO: for both administrator.js and instructor.js
 function getGrades(con) {
     /* 
     Purpose: Retrieves an array of all grade types in the DB as objects
@@ -374,7 +373,6 @@ function createCourse(id, title, dept, credits, cost, con) {
     });
 }
 
-// TODO: for administrator and student.js
 function viewCourses(con) {
     let sql = "SELECT * FROM course";
     return new Promise((resolve, reject) => {
@@ -484,13 +482,83 @@ function createClass(classId, courseId, section, instructor, year, semester, con
     });
 }
 
-
 // TODO: for administrator.js and student.js
-function getCurrentClasses() {
+function getCurrentSemClasses(con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Retrieves an array of all classes taking place during the current semester as objects
+    Input:
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If current semester is not assigned yet in the DB, returns an empty array.
+        If there are no classes yet for the current semester, returns an empty array. 
+        Otherwise, returns an array of objects that contain the classes' informations in each object.
+    */
+    return new Promise((resolve, reject) => {
+        async.waterfall([
+            function getCurrentSemester(callback) {
+                con.query('SELECT Name, Year FROM CurrentSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false, '', '');
+                        return resolve([]);
+                    }
+                    callback(null, true, result[0]['Year'], result[0]['Name']);
+                });
+            },
+            function execute(verification, year, semester) {
+                if (!verification) return;
+                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
+                            FROM Class \
+                            JOIN Course ON Class.CourseId = Course.Id \
+                            JOIN Instructor ON Class.Instructor = Instructor.Id \
+                            JOIN Department ON Course.Dept = Department.Id \
+                            WHERE Class.Year = ? AND Class.Semester = ?';
+                con.query(sql, [year, semester], (err, result) => {
+                    return err ? resolve([false]) : resolve(result);
+                });
+            }
+        ])
+    });
 }
 
 // TODO: for administrator.js and student.js
-function getNextClasses() {
+function getNextSemClasses() { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Retrieves an array of all classes taking place during the next semester as objects
+    Input:
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If next semester is not assigned yet in the DB, returns an empty array.
+        If there are no classes yet for the next semester, returns an empty array. 
+        Otherwise, returns an array of objects that contain the classes' informations in each object.
+    */
+    // TODO: repetitive code
+    return new Promise((resolve, reject) => {
+        async.waterfall([
+            function getNextSemester(callback) {
+                con.query('SELECT Name, Year FROM NextSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false, '', '');
+                        return resolve([]);
+                    }
+                    callback(null, true, result[0]['Year'], result[0]['Name']);
+                });
+            },
+            function execute(verification, year, semester) {
+                if (!verification) return;
+                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
+                                FROM Class \
+                                JOIN Course ON Class.CourseId = Course.Id \
+                                JOIN Instructor ON Class.Instructor = Instructor.Id \
+                                JOIN Department ON Course.Dept = Department.Id \
+                                WHERE Class.Year = ? AND Class.Semester = ?';
+                con.query(sql, [year, semester], (err, result) => {
+                    return err ? resolve([false]) : resolve(result);
+                });
+            }
+        ])
+    });
 }
 
 function updateClass(courseId, currSection, currYear, currSemester, newSection, newInstructor, newYear, newSemester, con) {
@@ -510,10 +578,10 @@ function updateClass(courseId, currSection, currYear, currSemester, newSection, 
         newSemester: new semester of class that is being updated in Class table (same as the name in the Semester table, cannot be null) [string]
         con: connection to DB (result of createConnection() method)
     Output: [Promise]
+        If the newYear and newSemester does not belong to the current or next semester, returns [false, 'Desired year or semester does not belong to the current or next semesters'].
+        If no such row in the Class table has a matching courseId, currSection, currYear, and currSemester, returns [false, 'No rows affected'].
         If there is no error, returns an array with only one element of true (i.e. [true])
         If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Name' at row 1"]).
-        If no such row in the Class table has a matching courseId, currSection, currYear, and currSemester, returns [false, 'No rows affected'].
-        If the newYear and newSemester does not belong to the current or next semester, returns [false, 'Desired year or semester does not belong to the current or next semesters'].
     */
     let sql = 'UPDATE Class \
                 SET Section = ?, \
@@ -560,10 +628,10 @@ function deleteClass(courseId, section, year, semester, con) {
         semester: the semester in which the to-be deleted class takes place [string]
         con: connection to DB (result of createConnection() method)
     Output: [Promise]
-        If there is no error, returns an array with only one element of true (i.e. [true])
-        If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Id' at row 1"]).
         If the year and semester does not belong to the next semester, returns [false, 'Year or semester does not belong to the next semester'] (cannot delete classes from the past or present)
         If a matching courseId, section, year, and semester does not exist in DB, returns [false, 'No rows affected'].
+        If there is no error, returns an array with only one element of true (i.e. [true])
+        If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Id' at row 1"]).
     */
     let sql = 'DELETE FROM Class WHERE CourseId = ? AND Section = ? AND Year = ? AND Semester = ?';
     return new Promise((resolve, reject) => {
@@ -651,7 +719,7 @@ function assignGraduation(id, con) {
     });
 }
 
-function assignProbation(id, con) { // TODO: work on each function from here forward with code quality
+function assignProbation(id, con) {
     /* 
     Purpose: Puts a student on probation in the DB
     Input:
@@ -694,23 +762,152 @@ function assignProbation(id, con) { // TODO: work on each function from here for
     });
 }
 
-function removeProbation(id, con) {
+function removeProbation(id, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Removes probation status for a student in the DB
+    Input:
+        id: student ID number of the student [int]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If there is no error, returns an array with only one element of true (i.e. [true])
+        If there is no matching id, returns [false, 'No matching id'].
+        If student is not on probation, returns [false, 'Student not currently on probation'].
+        If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Name' at row 1"]).
+    */
+    let sql = 'UPDATE Student SET Probation = false WHERE Id = ?';
+    return new Promise((resolve, reject) => {
+        async.waterfall([
+            function verify(callback) {
+                con.query('SELECT Registered, Probation FROM Student WHERE Id = ?', id, (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false);
+                        return resolve([false, 'No matching id']);
+                    }
+                    if (result[0].Probation === 0) {
+                        callback(null, false);
+                        return resolve([false, 'Student not currently on probation']);
+                    }
+                    callback(null, true);
+                });
+            },
+            function execute(verification) {
+                if (!verification) return;
+                con.query(sql, id, (err, result) => {
+                    return err ? resolve([false, err.sqlMessage]) : result.affectedRows > 0 ? resolve([true]) : resolve([false, 'No rows affected']);
+                });
+            }
+        ]);
+    });
 }
 
+// TODO: for instructor.js
+function getMyCurrentlyTaughtCourses() {
+}
+
+// TODO: for instructor.js
+function getMyTaughtCourses() {
+}
+
+// TODO: for student.js
+function getMyCurrentEnrollments() {
+}
+
+// TODO: for student.js
+function getAllMyEnrollments() {
+}
+
+// TODO: for student.js
+function viewMyGrades() {
+}
+
+// TODO: for instructor.js
+function assignGrade() {
+}
+
+function createAdministratorLogin() {
+
+}
+
+// TODO: for instructor.js
+function registerAsInstructor() {
+}
+
+// TODO: for student.js
+function registerAsStudent(id, name, ssn, email, password, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Student creates an account by specifying id, name, and ssn for verification and updates the email column in the Student table to the email of their choice and updates Login table with the student's email and password
+    Input:
+        id: student ID number of the student [int]
+        name: full name of the student [string]
+        ssn: Social Security Number of the student [int]
+        email: student's email of choice (must be unique; not used by other students) [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If email is not a valid email, returns [false, 'Email not valid'].
+        If email is already used by a student, returns [false, 'Email address already used by a student'].
+        If id, name, or ssn is incorrect, or a collection of these is incorrect, returns [false, 'No matching student information with id, name, and ssn given'].
+        If there is no error, returns an array with only one element of true (i.e. [true])
+        If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Name' at row 1"]).
+    */
+    let emailValidator = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/; // TODO: not necessary to use regex
+    let studentSQL = 'UPDATE Student \
+                        SET Email = ? \
+                        WHERE Id = ? AND Name = ? AND SSN = ?';
+    let loginSQL = 'INSERT INTO Login VALUES (?)';
+    return new Promise((resolve, reject) => {
+        if (!emailValidator.test(email)) return resolve([false, 'Email not valid']); // TODO: update here after changing regex
+        async.waterfall([
+            function verifyUniqueEmail(callback) {
+                con.query('SELECT Email FROM Student WHERE Email = ?', email, (err, result) => {
+                    if (result.length > 0) {
+                        callback(null, false);
+                        return resolve([false, 'Email address already used by a student']);
+                    }
+                    callback(null, true);
+                });
+            },
+            function executeStudent(verification, callback) {
+                if (!verification) return;
+                con.query(studentSQL, [email, id, name, ssn], (err, result) => {
+                    if (err) {
+                        callback(null, false);
+                        return resolve([false, err.sqlMessage]);
+                    }
+                    if (result.affectedRows === 0) {
+                        callback(null, false);
+                        return resolve([false, 'No matching student information with id, name, and ssn given']);
+                    }
+                    callback(null, true);
+                });
+            },
+            function executeLogin(verification) {
+                if (!verification) return;
+                con.query(loginSQL, [[email, password, 'Student']], (err, result) => {
+                    return err ? resolve([false, err.sqlMessage]) : resolve([true]);
+                });
+            }
+        ]);
+    });
+}
 
 // TODO: for administrator.js
 function verifyAdministratorLogin() {
 }
 
+// TODO: for instructor.js
+function verifyInstructorLogin() {
+}
 
-
-
+// TODO: for student.js
+function verifyStudentLogin() { // TODO: upto here
+}
 
 // TODO: for db-setup.js
 function seed() {
 }
 
 // TODO: check if all features are implemented in the proposal
+
 
 /* Testing */
 (async () => {
@@ -742,51 +939,7 @@ function seed() {
     const res26 = await createClass(32179, 1, 'M', 2, 2021, 'Spring', con);
     const res27 = await createClass(34280, 1, 'A', 4, 2021, 'Fall', con);
     const res28 = await createStudent(123, 'Saiful Islam', 123456789, con);
-    const res29 = await createStudent(456, 'Akbar Haider', 111111111, con); 
-    
-    // const res = await enrollInClass(32157, null, null, null, null, 123, con);
-    // const res = await enrollInClass(32231, null, null, null, null, 123, con);
-
-    // const res = await getClassInfo(1, 'H', 2021, 'Spring', con);
-    // console.log(res[0]['Year'], res[0]['Semester']);
-    // const res = await assignProbation(123, con);
-    // const res = await enrollInClass(null, 1, 'H', 2021, 'Spring', 123, con);
-    // const res = await getClassInfo(1, 'A', 2021, 'Fall', con);
-    // const res = await updateClass(1, 'TEST', 2021, 'Spring', 'TEST', 2, 2021, 'Winter', con);
-    // console.log(res16);
-    // console.log(res17);
-    // console.log(res18);
-    // const res = await createClass(null, 1, 'TEST', 2, 2021, 'Winter', con);
-    // const res = await getClasses(con);
-    // console.log(res);
-    // const res = await deleteAccountType('Student', con);
-    // const res = await getAccountTypes(con);
-    // const res = await deleteAccountType('Teacher', con);
-    // const res = await createDepartment(2, 'Test department', con);
-    // const res = await deleteDepartment(26, con);
-    // const res = await getDepartments(con);
-    // const res = await deleteGrade('E', con);
-    // const res = await deleteGrade('F', con);
-    // const res = await getGrades(con);
-    // const res = await deleteSemester('Fa', con);
-    // const res = await getSemesters(con);
-    // const res = await createInstructor(123, 'John Doe', 'johndoe@gmail.com', con);
-    // const res = await deleteInstructor(0, con);
-    // const res = await getInstructors(con);
-    // const res = await updatedInstructorForClass(123, 'Bob', con);
-    // const res = await createCourse(100, 'Saiful's Awesome Lab', 1, 3, 1000.00, con);
-    // const res = await deleteCourse(1, con);
-    // const res = await updateCourse(101, 'Saiful's New Awesome Lab', 1, 4, 1500.00, con);
-    // const res = await deleteClass(1, 'B', 2021, 'Spring', con);
-    // const res = await getClassInfo(1, 'H', 2021, 'Spring', con);
-    // const res = await getClasses(con);
-    // const res = await createStudent(123321, 'Saiful Islam', 123456789, con);
-    // const res = await registerAsStudent(123321, 'Saiful Islam', 123456789, 'nysaifulislam@gmail.com', con);
-    // const res = await enrollInClass(null, 1, 'H', 2021, 'Spring', )
-    // const res = await assignProbation(123321, con);
-    // const res = await assignGraduation(123321, con);
-    // const res = await enrollInClass(null, 1, 'H', 2021, 'Spring', 123321, con);
-    // const res = await enrollInClass(32200, null, null, null, null, 123321, con);
+    const res29 = await createStudent(456, 'Akbar Haider', 111111111, con);
 
     // console.log(res);
 })();
@@ -795,32 +948,32 @@ app.listen(5002, () => {
     console.log('Server Started on Port 5002');
 });
 
-module.exports ={
-createAccountType,
-getAccountTypes,
-deleteAccountType,
-createDepartment,
-getDepartments,
-deleteDepartment,
-getGrades,
-createGrade,
-deleteGrade,
-getSemesters,
-deleteSemester,
-createSemester,
-assignCurrentSemester,
-assignNextSemester,
-getInstructors,
-createInstructor,
-deleteInstructor,
-createCourse,
-updateCourse,
-viewCourses,
-deleteCourse,
-createClass,
-updateClass,
-deleteClass,
-createStudent,
-assignGraduation,
-assignProbation
+module.exports = {
+    createAccountType,
+    getAccountTypes,
+    deleteAccountType,
+    createDepartment,
+    getDepartments,
+    deleteDepartment,
+    getGrades,
+    createGrade,
+    deleteGrade,
+    getSemesters,
+    deleteSemester,
+    createSemester,
+    assignCurrentSemester,
+    assignNextSemester,
+    getInstructors,
+    createInstructor,
+    deleteInstructor,
+    createCourse,
+    updateCourse,
+    viewCourses,
+    deleteCourse,
+    createClass,
+    updateClass,
+    deleteClass,
+    createStudent,
+    assignGraduation,
+    assignProbation
 };

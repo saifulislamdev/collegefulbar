@@ -19,10 +19,11 @@ function getClassInfo(courseId, section, year, semester, con) {
         If there are no classes in the DB that match the arguments, returns an empty array. 
         Otherwise, returns an array with an object that contains the class's information in the object.
     */
-    let sql = 'SELECT Class.Id, Class.CourseId, Course.Title, Class.Section, Instructor.Name, Class.Year, Class.Semester, Course.Dept, Course.Credits, Course.Cost \
+    let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
                 FROM Class \
                 JOIN Course ON Class.CourseId = Course.Id \
                 JOIN Instructor ON Class.Instructor = Instructor.Id \
+                JOIN Department ON Course.Dept = Department.Id \
                 WHERE Class.CourseId = ? AND Class.Section = ? AND Class.Year = ? AND Class.Semester = ?';
     return new Promise((resolve, reject) => {
         con.query(sql, [courseId, section, year, semester], (err, result) => {

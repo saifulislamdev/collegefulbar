@@ -21,24 +21,3 @@ function getGrades(con) {
         });
     });
 }
-
-// TODO: for instructor.js
-function assignGrade() {
-}
-
-// TODO: for instructor.js
-function registerAsInstructor() {
-    
-}
-
-// TODO: for instructor.js
-function verifyInstructorLogin() {
-}
-
-// TODO: for instructor.js
-function getMyCurrentlyTaughtCourses() {
-}
-
-// TODO: for instructor.js
-function getMyTaughtCourses() {
-}

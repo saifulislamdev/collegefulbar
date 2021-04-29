@@ -10,10 +10,11 @@ const async = require('async');
 
 // set up the database credientials and create connections 
 const db = mysql.createConnection({ // Changed connection set up to work on my own local network
-    host: 'localhost', 
+    host: '127.0.0.1', 
     user: 'root',
-    password: '',
-    database: 'College-ful-bar',
+    password: 'ploop',
+    database: 'Collegefulbar',
+    port: 3306, // create this option for me in the .env
     multipleStatements: true
 });
 

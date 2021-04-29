@@ -3,6 +3,7 @@ const app = express();
 const async = require('async');
 const con = require('./index').con;
 const { create } = require('express-handlebars');
+
 // TODO: for administrator and student.js
 function viewCourses(con) {
     let sql = "SELECT * FROM course";
@@ -11,15 +12,6 @@ function viewCourses(con) {
             return err ? resolve([false]) : resolve(result);
         });
     });
-}
-
-
-// TODO: for administrator.js and student.js
-function getCurrentClasses() {
-}
-
-// TODO: for administrator.js and student.js
-function getNextClasses() {
 }
 
 // TODO: for student.js
@@ -34,9 +26,8 @@ function enrollInClass(classId, courseId, section, year, semester, studentId, co
         semester: the semester the class takes place [string]
         con: connection to DB (result of createConnection() method)
     Output: [Promise]
-    TODO: SWITCH THESE AROUND
-        If the year and semester don't match either the current or next semesters, returns [false, 'Can only enroll in classes for current and next semesters'].
         If there is no matching classId (1) and no matching courseId, section, year, and semester (2), returns [false, 'No matching class'].
+        If the year and semester don't match either the current or next semesters, returns [false, 'Can only enroll in classes for current and next semesters'].
         If there is no matching studentId, returns [false, 'No matching studentId'].
         If student is not registered anymore, returns [false, 'Student not registered anymore'].
         If there is no error, returns an array with only one element of true (i.e. [true])
@@ -79,7 +70,7 @@ function enrollInClass(classId, courseId, section, year, semester, studentId, co
                     let nextYear = result[1][0]['Year'];
                     if ((currSem !== semester || currYear !== year) && (nextSem !== semester || nextYear !== year)) {
                         callback(null, false, []);
-                        return resolve([false, 'Can only drop classes for current and next semesters']);
+                        return resolve([false, 'Can only enroll in classes for current and next semesters']);
                     }
                     callback(null, true, args1);
                 });
@@ -106,14 +97,6 @@ function enrollInClass(classId, courseId, section, year, semester, studentId, co
             }
         ]);
     });
-}
-
-// TODO: for student.js
-function getMyCurrentEnrollments() {
-}
-
-// TODO: for student.js
-function getAllMyEnrollments() {
 }
 
 // TODO: for student.js
@@ -210,40 +193,4 @@ function dropClass(classId, courseId, section, year, semester, studentId, con) {
             }
         ])
     });
-}
-
-
-// TODO: for student.js
-function viewMyGrades() {
-}
-
-// TODO: for student.js
-function registerAsStudent(id, name, ssn, email, con) { // TODO: ERROR HERE UPDATE THIS .. THEN TEST FROM HERE
-    /* 
-    Purpose: Student creates an account by specifying id, name, and ssn for verification and updates the email column in the Student table to the email of their choice
-    Input:
-        id: student ID number of the student [int]
-        name: full name of the student [string]
-        ssn: Social Security Number of the student [int]
-        email: student's email of choice (must be unique; not used by other students) [string]
-        con: connection to DB (result of createConnection() method)
-    Output: [Promise]
-        If email is not a valid email, returns [false, 'Email not valid'].
-        If there is no error, returns an array with only one element of true (i.e. [true])
-        If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Name' at row 1"]).
-    */
-    let emailValidator = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/; // TODO: not necessary to use regex
-    let sql = 'UPDATE Student \
-                SET Email = ? \
-                WHERE Id = ? AND Name = ? AND SSN = ?';
-    return new Promise((resolve, reject) => {
-        if (!emailValidator.test(email)) return resolve([false, 'Email not valid']); // TODO: update here after changing regex
-        con.query(sql, [email, id, name, ssn], (err, result) => {
-            return err ? resolve([false, err.sqlMessage]) : result.affectedRows > 0 ? resolve([true]) : resolve([false, 'No rows affected']);
-        });
-    });
-}
-
-// TODO: for student.js
-function verifyStudentLogin() {
 }
