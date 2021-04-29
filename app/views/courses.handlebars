@@ -39,35 +39,33 @@
     </section>
     <section id="main" class="wrapper">
         <div id="courses" class="container">
-            <h5>Update Course</h5>
+            <h5>Create Course</h5>
             <div class="card-body">
-                <form action="/updateCourse/submit" method="POST">
+                <form action="/createCourse/submit" method="POST">
                     <div class="form-group">
                         <label for="id"></label>
-                        <input type="text" class="form-control" value={{courses.Id}} id="id" name="id"
-                            placeholder="Enter Course ID">
+                        <input type="text" class="form-control" id="id" name="id" placeholder="Enter Course ID">
                     </div>
                     <div class="form-group">
                         <label for="title"></label>
-                        <input type="text" class="form-control" value={{courses.Title}} id="title" name="title"
-                            placeholder="Enter Title">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title">
                     </div>
                     <div class="form-group">
-                        <label for="department"></label>
-                        <input type="text" class="form-control" value={{courses.Dept}} id="department" name="department"
-                            placeholder="Enter Department">
+                        <p>Department: <select name="department" id="department">
+                                {{#each dept}}
+                                <option>{{this.Id}}</option>
+                                {{/each}}
+                            </select>
                     </div>
                     <div class="form-group">
                         <label for="credits"></label>
-                        <input type="text" class="form-control" value={{courses.Credits}} id="credits" name="credits"
-                            placeholder="Enter Credits">
+                        <input type="text" class="form-control" id="credits" name="credits" placeholder="Enter Credits">
                     </div>
                     <div class="form-group">
                         <label for="cost"></label>
-                        <input type="text" class="form-control" value={{courses.Cost}} id="cost" name="cost"
-                            placeholder="Enter Cost">
+                        <input type="text" class="form-control" id="cost" name="cost" placeholder="Enter Cost">
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Course</button>
+                    <button type="submit" class="btn btn-primary">Add Course</button>
                 </form>
             </div>
         </div>

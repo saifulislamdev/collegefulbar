@@ -38,41 +38,43 @@
 
     </section>
     <section id="main" class="wrapper">
-        <div id="courses" class="container">
-            <h5>Update Course</h5>
+        <div id="grades" class="container">
+            <h5>Create Grades</h5>
             <div class="card-body">
-                <form action="/updateCourse/submit" method="POST">
+                <form action="/createGrades/submit" method="POST">
                     <div class="form-group">
-                        <label for="id"></label>
-                        <input type="text" class="form-control" value={{courses.Id}} id="id" name="id"
-                            placeholder="Enter Course ID">
+                        <label for="grades"></label>
+                        <input type="text" class="form-control" id="grades" name="grades" placeholder="Enter Grade">
                     </div>
-                    <div class="form-group">
-                        <label for="title"></label>
-                        <input type="text" class="form-control" value={{courses.Title}} id="title" name="title"
-                            placeholder="Enter Title">
-                    </div>
-                    <div class="form-group">
-                        <label for="department"></label>
-                        <input type="text" class="form-control" value={{courses.Dept}} id="department" name="department"
-                            placeholder="Enter Department">
-                    </div>
-                    <div class="form-group">
-                        <label for="credits"></label>
-                        <input type="text" class="form-control" value={{courses.Credits}} id="credits" name="credits"
-                            placeholder="Enter Credits">
-                    </div>
-                    <div class="form-group">
-                        <label for="cost"></label>
-                        <input type="text" class="form-control" value={{courses.Cost}} id="cost" name="cost"
-                            placeholder="Enter Cost">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Course</button>
+                    <button type="submit" class="btn btn-primary" onclick="AddGrade()">Add Grade</button>
                 </form>
             </div>
         </div>
+        <div id="view" class="container">
+            <h5>List of All Grades</h5>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Grades</td>
+                    </tr>
+                    {{#each grades}}
+
+                    <tr>
+                        <td>{{this.Name}}</td>
+                        <td><a href="/deleteGrades/{{Name}}">Delete </a></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
 
     </section>
+    <script>
+
+        function AddGrades() {
+            alert("Grade Has been Added");
+        }
+    </script>
 </body>
 
 

@@ -34,45 +34,55 @@
 
 <body>
 
-    <section>
-
-    </section>
     <section id="main" class="wrapper">
-        <div id="courses" class="container">
-            <h5>Update Course</h5>
+        <div id="current" class="container">
+            <h5>Current Semester</h5>
             <div class="card-body">
-                <form action="/updateCourse/submit" method="POST">
+                <form action="/currentSemester/submit" method="POST">
                     <div class="form-group">
-                        <label for="id"></label>
-                        <input type="text" class="form-control" value={{courses.Id}} id="id" name="id"
-                            placeholder="Enter Course ID">
+                        <p>Semester: <select name="semester" id="semester">
+                                {{#each sem}}
+                                <option>{{this.Name}}</option>
+                                {{/each}}
+                            </select>
                     </div>
                     <div class="form-group">
-                        <label for="title"></label>
-                        <input type="text" class="form-control" value={{courses.Title}} id="title" name="title"
-                            placeholder="Enter Title">
+                        <label for="year"></label>
+                        <input type="text" class="form-control" id="year" name="year" placeholder="Enter Semester Year">
                     </div>
-                    <div class="form-group">
-                        <label for="department"></label>
-                        <input type="text" class="form-control" value={{courses.Dept}} id="department" name="department"
-                            placeholder="Enter Department">
-                    </div>
-                    <div class="form-group">
-                        <label for="credits"></label>
-                        <input type="text" class="form-control" value={{courses.Credits}} id="credits" name="credits"
-                            placeholder="Enter Credits">
-                    </div>
-                    <div class="form-group">
-                        <label for="cost"></label>
-                        <input type="text" class="form-control" value={{courses.Cost}} id="cost" name="cost"
-                            placeholder="Enter Cost">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Course</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
                 </form>
             </div>
         </div>
 
+
     </section>
+
+
+    <section id="main" class="wrapper">
+        <div id="next" class="container">
+            <h5>Next Semester</h5>
+            <div class="card-body">
+                <form action="/nextSemester/submit" method="POST">
+                    <div class="form-group">
+                        <p>Semester: <select name="semester" id="semester">
+                                {{#each sem}}
+                                <option>{{this.Name}}</option>
+                                {{/each}}
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="year"></label>
+                        <input type="text" class="form-control" id="year" name="year" placeholder="Enter Semester Year">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+
+
+    </section>
+
 </body>
 
 

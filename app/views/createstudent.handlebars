@@ -22,7 +22,7 @@
             <li><a href="/instructor"></a>instructor</li>
             <li><a href="/courses"></a>Add Courses</li>
             <li><a href="/viewcourses"></a>View Courses</li>
-            <li><a href="/createclass"></a>Create Class</li>
+            <li><a href="/createclass"></a>Add Class</li>
             <li><a href="/createstudent"></a>Add Student</li>
             <li><a href="/gradprob"></a>Graduation or Probation</li>
             <form method="post">
@@ -38,41 +38,32 @@
 
     </section>
     <section id="main" class="wrapper">
-        <div id="courses" class="container">
-            <h5>Update Course</h5>
+        <div id="class" class="container">
+            <h5>Create student</h5>
             <div class="card-body">
-                <form action="/updateCourse/submit" method="POST">
+                <form action="/createStudent/submit" method="POST">
                     <div class="form-group">
-                        <label for="id"></label>
-                        <input type="text" class="form-control" value={{courses.Id}} id="id" name="id"
-                            placeholder="Enter Course ID">
+                        <label for="studentid"></label>
+                        <input type="text" class="form-control" id="studentid" name="studentid"
+                            placeholder="Enter Student ID">
                     </div>
                     <div class="form-group">
-                        <label for="title"></label>
-                        <input type="text" class="form-control" value={{courses.Title}} id="title" name="title"
-                            placeholder="Enter Title">
+                        <label for="studentname"></label>
+                        <input type="text" class="form-control" id="studentname" name="studentname"
+                            placeholder="Enter Name">
                     </div>
                     <div class="form-group">
-                        <label for="department"></label>
-                        <input type="text" class="form-control" value={{courses.Dept}} id="department" name="department"
-                            placeholder="Enter Department">
+                        <label for="ssn"></label>
+                        <input type="text" class="form-control" id="ssn" name="ssn" placeholder="Enter SSN">
                     </div>
-                    <div class="form-group">
-                        <label for="credits"></label>
-                        <input type="text" class="form-control" value={{courses.Credits}} id="credits" name="credits"
-                            placeholder="Enter Credits">
-                    </div>
-                    <div class="form-group">
-                        <label for="cost"></label>
-                        <input type="text" class="form-control" value={{courses.Cost}} id="cost" name="cost"
-                            placeholder="Enter Cost">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Course</button>
+
+                    <button type="submit" class="btn btn-primary">Add Student</button>
                 </form>
             </div>
         </div>
 
     </section>
+
 </body>
 
 

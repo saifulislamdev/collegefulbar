@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Admin</title>
+</head>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/user/admin-panel/:Email"></a>Accounts</li>
+            <li><a href="/department"></a>Dept</li>
+            <li><a href="/grades"></a>Grades</li>
+            <li><a href="/semester"></a>Semester</li>
+            <li><a href="/current"></a>Assign Semesters</li>
+            <li><a href="/instructor"></a>instructor</li>
+            <li><a href="/courses"></a>Add Courses</li>
+            <li><a href="/viewcourses"></a>View Courses</li>
+            <li><a href="/createclass"></a>Create Class</li>
+            <li><a href="/createstudent"></a>Add Student</li>
+            <li><a href="/gradprob"></a>Graduation or Probation</li>
+            <form method="post">
+                <button formaction="/logout" class="pure-button button-small">logout</button></center>
+            </form>
+        </ul>
+    </nav>
+</header>
+
+<body>
+    <section id="main" class="wrapper">
+        <div id="accountType" class="container">
+            <h5>Add Account Type</h5>
+            <div class="card-body">
+                <form action="/accountType/submit" method="POST">
+                    <div class="form-group">
+                        <label for="accountType"></label>
+                        <input type="text" class="form-control" id="accountType" name="accountType"
+                            placeholder="Enter Account Name">
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="AddAccountTypeNotice()">Add Account</button>
+                </form>
+            </div>
+        </div>
+        <div id="view" class="container">
+            <h5>List of All Account Types</h5>
+            <table>
+                <tbody>
+                    {{#each items}}
+                    <tr>
+                        <td>{{this.Name}}</td>
+                        <td><a href="/deleteAccount/{{Name}}">Delete </a></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+    <section>
+
+        <script>
+            function AddAccountTypeNotice() {
+                alert("Account Type Has been Added");
+            }
+        </script>
+</body>
+
+
+</html>

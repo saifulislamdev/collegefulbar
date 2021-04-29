@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Admin</title>
+</head>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/user/admin-panel/:Email"></a>Accounts</li>
+            <li><a href="/department"></a>Dept</li>
+            <li><a href="/grades"></a>Grades</li>
+            <li><a href="/semester"></a>Semester</li>
+            <li><a href="/current"></a>Assign Semesters</li>
+            <li><a href="/instructor"></a>instructor</li>
+            <li><a href="/courses"></a>Add Courses</li>
+            <li><a href="/viewcourses"></a>View Courses</li>
+            <li><a href="/createclass"></a>Create Class</li>
+            <li><a href="/createstudent"></a>Add Student</li>
+            <li><a href="/gradprob"></a>Graduation or Probation</li>
+            <form method="post">
+                <button formaction="/logout" class="pure-button button-small">logout</button></center>
+            </form>
+        </ul>
+    </nav>
+</header>
+
+<body>
+
+    <section>
+
+    </section>
+    <section id="main" class="wrapper">
+        <div id="view" class="container">
+            <h5>List of All Courses</h5>
+            <table>
+                <tbody>
+                    <tr>
+                        <td> ID</td>
+                        <td> Title</td>
+                        <td> Department</td>
+                        <td> Credits</td>
+                        <td> Cost</td>
+                    </tr>
+                    {{#each courses}}
+
+                    <tr>
+                        <td>{{this.Id}}</td>
+                        <td>{{this.Title}}</td>
+                        <td>{{this.Dept}}</td>
+                        <td>{{this.Credits}}</td>
+                        <td>{{this.Cost}}</td>
+                        <td><a href="/EditCourse/{{Id}}">Edit </a></td>
+                        <td><a href="/deleteCourse/{{Id}}">Delete </a></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+</body>
+
+
+</html>
