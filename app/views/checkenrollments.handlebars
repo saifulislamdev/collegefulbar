@@ -31,23 +31,15 @@
     <section id="main" class="wrapper">
         <div id="view" class="container">
             <h5>View Enrollments By Semester</h5>
-            <form action="/checkcurrentenroll/submit" method="POST">
-                <div class="form-group">
-                    <label for="studentid"></label>
-                    <input type="text" class="form-control" id="studentid" name="studentid"
-                        placeholder="Enter Student ID">
-                </div>
-                <button type="submit" class="btn btn-primary">Check Current Enrollment</button>
-            </form>
-
-            <form action="/checknextenroll/submit" method="POST">
-                <div class="form-group">
-                    <label for="studentid"></label>
-                    <input type="text" class="form-control" id="studentid" name="studentid"
-                        placeholder="Enter Student ID">
-                </div>
-                <button type="submit" class="btn btn-primary">Check Next Enrollment</button>
-            </form>
+            <table>
+                <tbody>
+                    <br>
+                    <td><a href="/view/enroll">Current Semester Enrolled </a></td>
+                    <br></br>
+                    <td><a href="/view/nextenroll">Next Semester Enrolled </a></td>
+                    </tr>
+                </tbody>
+            </table>
             <h5>List of Enrollment</h5>
             <table>
                 <tbody>
