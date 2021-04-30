@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Admin</title>
+</head>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/user/admin-panel/:Email"></a>Accounts</li>
+            <li><a href="/department"></a>Dept</li>
+            <li><a href="/grades"></a>Grades</li>
+            <li><a href="/semester"></a>Semester</li>
+            <li><a href="/current"></a>Assign Semesters</li>
+            <li><a href="/instructor"></a>instructor</li>
+            <li><a href="/courses"></a>Add Courses</li>
+            <li><a href="/viewcourses"></a>View Courses</li>
+            <li><a href="/createclass"></a>Create Class</li>
+            <li><a href="/createstudent"></a>Add Student</li>
+            <li><a href="/gradprob"></a>Graduation or Probation</li>
+            <form method="post">
+                <button formaction="/logout" class="pure-button button-small">logout</button></center>
+            </form>
+        </ul>
+    </nav>
+</header>
+
+<body>
+
+    <section id="main" class="wrapper">
+        <div id="class" class="container">
+
+            <div class="card-body">
+                <form action="/updateClass/submit" method="POST">
+                    <div class="form-group">
+                        <label for="id"></label>
+                        <input type="text" class="form-control" value={{class.Id}} id="id" name="id"
+                            placeholder="Enter Class ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="CourseId"></label>
+                        <input type="text" class="form-control" value={{class.CourseId}} id="CourseId" name="CourseId"
+                            placeholder="Enter Course ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="section"></label>
+                        <input type="text" class="form-control" value={{class.Section}} id="section" name="section"
+                            placeholder="Enter section">
+                    </div>
+                    <div class="form-group">
+                        <label for="year"></label>
+                        <input type="text" class="form-control" value={{class.Year}} id="year" name="year"
+                            placeholder="Enter Year">
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"></label>
+                        <input type="text" class="form-control" value={{class.Semester}} id="semester" name="semester"
+                            placeholder="Enter Semester">
+                    </div>
+                    <div class="form-group">
+                        <label for="newsection"></label>
+                        <input type="text" class="form-control" id="newsection" name="newsection"
+                            placeholder="Enter Section">
+                    </div>
+                    <div class="form-group">
+                        <label for="newinstructor"></label>
+                        <input type="text" class="form-control" id="newinstructor" name="newinstructor"
+                            placeholder="Enter instructor">
+                    </div>
+                    <div class="form-group">
+                        <label for="newsemester"></label>
+                        <input type="text" class="form-control" id="newsemester" name="newsemester"
+                            placeholder="Enter semester">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newyear"></label>
+                        <input type="number" class="form-control" id="newyear" name="newyear" placeholder="Enter Year">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Class</button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+</body>
+
+
+</html>

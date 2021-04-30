@@ -22,7 +22,7 @@
             <li><a href="/instructor"></a>instructor</li>
             <li><a href="/courses"></a>Add Courses</li>
             <li><a href="/viewcourses"></a>View Courses</li>
-            <li><a href="/createclass"></a>Add Class</li>
+            <li><a href="/createclass"></a>Create Class</li>
             <li><a href="/createstudent"></a>Add Student</li>
             <li><a href="/gradprob"></a>Graduation or Probation</li>
             <form method="post">
@@ -61,6 +61,22 @@
                             placeholder="Enter Student ID">
                     </div>
                     <button type="submit" class="btn btn-primary">Assign Probation</button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="main" class="wrapper">
+        <div id="class" class="container">
+            <div class="card-body">
+                <form action="/removeProbation/submit" method="POST">
+                    <div class="form-group">
+                        <label for="studentid"></label>
+                        <input type="text" class="form-control" id="studentid" name="studentid"
+                            placeholder="Enter Student ID">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Remove Probation</button>
                 </form>
             </div>
         </div>

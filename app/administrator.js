@@ -524,7 +524,7 @@ function getCurrentSemClasses(con) { // TODO: Akbar, you can move this
 }
 
 // TODO: for administrator.js and student.js
-function getNextSemClasses() { // TODO: Akbar, you can move this
+function getNextSemClasses(con) { // TODO: Akbar, you can move this
     /* 
     Purpose: Retrieves an array of all classes taking place during the next semester as objects
     Input:
@@ -1118,6 +1118,9 @@ module.exports = {
     createStudent,
     assignGraduation,
     assignProbation,
+    removeProbation,
+    getCurrentSemClasses,
+    getNextSemClasses,
     getMyCurrentEnrollments, // added by Saiful
     getMyNextEnrollments // added by Saiful
 };
