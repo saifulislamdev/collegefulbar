@@ -805,7 +805,6 @@ function removeProbation(id, con) { // TODO: Akbar, you can move this
     });
 }
 
-<<<<<<< HEAD
 // TODO: for instructor.js
 function getMyCurrentlyTaughtClasses(id, con) { // TODO: Akbar, you can move this
     /* 
@@ -998,8 +997,6 @@ function getMyNextEnrollments(id, con) { // TODO: Akbar, you can move this
     });
 }
 
-=======
->>>>>>> 749714febcd088e069bb679b610d0b031951003d
 // TODO: for student.js
 function getAllMyEnrollments(id, con) { // TODO: Akbar, you can move this
     /* 
@@ -1281,7 +1278,6 @@ function registerAsInstructor(id, name, email, password, con) {
     });
 }
 
-<<<<<<< HEAD
 // TODO: for student.js
 function registerAsStudent(id, name, ssn, email, password, con) { // TODO: Akbar, you can move this
     /* 
@@ -1341,8 +1337,6 @@ function registerAsStudent(id, name, ssn, email, password, con) { // TODO: Akbar
     });
 }
 
-=======
->>>>>>> 749714febcd088e069bb679b610d0b031951003d
 // TODO: for administrator.js
 function verifyAdministratorLogin() {
 }
@@ -1385,7 +1379,6 @@ module.exports = {
     createStudent,
     assignGraduation,
     assignProbation,
-<<<<<<< HEAD
     getMyCurrentEnrollments, // added by Saiful
     getMyNextEnrollments, // added by Saiful
     getAllMyEnrollments, // added by Saiful
@@ -1394,9 +1387,4 @@ module.exports = {
     createAdministratorLogin, // added by Saiful
     registerAsInstructor, // added by Saiful
     registerAsStudent // added by Saiful
-=======
-    removeProbation,
-    getCurrentSemClasses,
-    getNextSemClasses
->>>>>>> 749714febcd088e069bb679b610d0b031951003d
 };
