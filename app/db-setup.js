@@ -8,10 +8,6 @@ const accountType = "CREATE TABLE IF NOT EXISTS AccountType(Name VARCHAR(255) PR
 const department = "CREATE TABLE IF NOT EXISTS Department(Id SMALLINT AUTO_INCREMENT PRIMARY KEY, Name VARCHAR(255))";
 const grade = "CREATE TABLE IF NOT EXISTS Grade(Name VARCHAR(255) PRIMARY KEY)";
 const instructor = "CREATE TABLE IF NOT EXISTS Instructor(Id INT PRIMARY KEY, Name VARCHAR(255), Email VARCHAR(255) UNIQUE)";
-// const pendingStudent = "CREATE TABLE IF NOT EXISTS PendingStudent (\
-//                             SSN VARCHAR(9) PRIMARY KEY, \
-//                             Name VARCHAR(255), \
-//                             Email VARCHAR(255) UNIQUE)";
 const semester = "CREATE TABLE IF NOT EXISTS Semester(Name VARCHAR(255) PRIMARY KEY)";
 const currentSemester = "CREATE TABLE IF NOT EXISTS CurrentSemester(\
                             Name VARCHAR(255), \
@@ -64,7 +60,6 @@ const login = "CREATE TABLE IF NOT EXISTS Login (\
                 AccountType VARCHAR(255), \
                 PRIMARY KEY (Email, AccountType), \
                 FOREIGN KEY (AccountType) REFERENCES AccountType(Name))";
-// TODO: create a CurrentSemester table (update in createTables() and deleteTables())
 
 function createTable(sql, successIndicator, con) {
     /* helper function for createTables() */
@@ -82,7 +77,6 @@ function createTables(con) {
     createTable(department, "Department", con);
     createTable(grade, "Grade", con);
     createTable(instructor, "Instructor", con);
-    // createTable(pendingStudent, "PendingStudent", con);
     createTable(semester, "Semester", con);
     createTable(currentSemester, "CurrentSemester", con);
     createTable(nextSemester, "NextSemester", con);
@@ -109,7 +103,7 @@ function deleteTable(sql, successIndicator, con) {
 function deleteTables(con) {
     /* deletes all tables in the DB that the app uses */
     deleteTable("DROP TABLE IF EXISTS Login", "Login", con);
-    //deleteTable("DROP TABLE IF EXISTS ProgramAdvisor", "ProgramAdvisor", con);
+    deleteTable("DROP TABLE IF EXISTS ProgramAdvisor", "ProgramAdvisor", con); // TODO: Akbar, if this table is not in your DB anymore, get rid of this line
     deleteTable("DROP TABLE IF EXISTS Enrollment", "Enrollment", con);
     deleteTable("DROP TABLE IF EXISTS Class", "Class", con);
     deleteTable("DROP TABLE IF EXISTS Course", "Course", con);
@@ -117,7 +111,7 @@ function deleteTables(con) {
     deleteTable("DROP TABLE IF EXISTS NextSemester", "NextSemester", con);
     deleteTable("DROP TABLE IF EXISTS CurrentSemester", "CurrentSemester", con);
     deleteTable("DROP TABLE IF EXISTS Semester", "Semester", con);
-    //deleteTable("DROP TABLE IF EXISTS PendingStudent", "PendingStudent", con);
+    deleteTable("DROP TABLE IF EXISTS PendingStudent", "PendingStudent", con); // TODO: Akbar, if this table is not in your DB anymore, get rid of this line
     deleteTable("DROP TABLE IF EXISTS Instructor", "Instructor", con);
     deleteTable("DROP TABLE IF EXISTS Grade", "Grade", con);
     deleteTable("DROP TABLE IF EXISTS Department", "Department", con);

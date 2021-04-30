@@ -5,6 +5,7 @@ const con = require('./index').con;
 const { create } = require('express-handlebars');
 
 // TODO: put files in models folder
+// TODO: change to exports. instead
 
 function createAccountType(accountType, con) {
     /* 
@@ -275,7 +276,7 @@ function assignNextSemester(name, year, con) {
             function verify(callback) {
                 con.query('SELECT Name, Year FROM CurrentSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
                     let currSem = result[0];
-                    if (currSem['Name'] === name && currSem['Year'] === year) {
+                    if (typeof currSem !== 'undefined' && currSem['Name'] === name && currSem['Year'] === year) {
                         callback(null, false);
                         return resolve([false, 'Next semester cannot be current semester']);
                     }
@@ -439,6 +440,7 @@ function createClass(classId, courseId, section, instructor, year, semester, con
         instructor must already be in Instructor table's Id column
         semester must already be in Semester table's Name column
         year and semester must collectively be either the current or next semester
+        There must be a current semester and next semester assigned in the DB. // TODO: change this (not immediately necessary)
     Input:
         classId: class ID for the class the user wants to create (if null, automatically sets a class ID) [int]
         courseId: course ID that references a course in the Course table (must specify a specific ID number that's in the Course table's Id column, cannot be null, int)
@@ -567,6 +569,7 @@ function updateClass(courseId, currSection, currYear, currSemester, newSection, 
     Warning: 
         newInstructor must already be in Instructor table's Id column
         newSemester must already be in Semester table's Name column
+        There must be a current semester and next semester assigned in the DB.
     Input:
         courseId: course ID of class that is being updated in Class table [int]
         currSection: current section of class that is being updated in Class table [string]
@@ -621,6 +624,8 @@ function updateClass(courseId, currSection, currYear, currSemester, newSection, 
 function deleteClass(courseId, section, year, semester, con) {
     /* 
     Purpose: Deletes a class in the DB if it exists 
+    Warning:
+        There must be a next semester assigned in the DB.
     Input:
         courseId: course ID for the to-be deleted class [int]
         section: section of the to-be deleted class [string]
@@ -801,15 +806,196 @@ function removeProbation(id, con) { // TODO: Akbar, you can move this
 }
 
 // TODO: for instructor.js
-function getMyCurrentlyTaughtCourses() {
+function getMyCurrentlyTaughtClasses(id, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Retrieves an array of all classes an instructor is teaching for the current semester
+    Input:
+        id: id of instructor [int]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If the id does not match an instructor id, returns [false, 'No matching instructor id']
+        If current semester is not assigned yet in the DB, returns an empty array.
+        If the instructor is not teaching any classes yet for the current semester, returns an empty array. 
+        Otherwise, returns an array of objects that contain the classes' informations in each object.
+    */
+    return new Promise((resolve, reject) => {
+        async.waterfall([
+            function verifyInstructor(callback) {
+                con.query('SELECT Id FROM Instructor WHERE Id = ?', id, (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false);
+                        return resolve([false, 'No matching instructor id']);
+                    }
+                    callback(null, true);
+                });
+            },
+            function getCurrentSemester(verification, callback) {
+                if (!verification) return;
+                con.query('SELECT Name, Year FROM CurrentSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false, '', '');
+                        return resolve([]);
+                    }
+                    callback(null, true, result[0]['Year'], result[0]['Name']);
+                });
+            },
+            function execute(verification, year, semester) {
+                if (!verification) return;
+                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
+                            FROM Class \
+                            JOIN Course ON Class.CourseId = Course.Id \
+                            JOIN Department ON Course.Dept = Department.Id \
+                            WHERE Class.Instructor = ? AND Class.Year = ? AND Class.Semester = ?';
+                con.query(sql, [id, year, semester], (err, result) => {
+                    return err ? resolve([false]) : resolve(result);
+                });
+            }
+        ])
+    });
 }
 
 // TODO: for instructor.js
-function getMyTaughtCourses() {
+function getMyTaughtClasses(id, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Retrieves an array of all classes an instructor has taught, is currently teaching, or will teach
+    Input:
+        id: id of instructor [int]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If the id does not match an instructor id, returns [false, 'No matching instructor id']
+        If the instructor has not taught classes in the past, is not currently teaching, and will not teach any class in the future, returns an empty array. 
+        Otherwise, returns an array of objects that contain the classes' informations in each object.
+    */
+    return new Promise((resolve, reject) => {
+        async.waterfall([
+            function verifyInstructor(callback) {
+                con.query('SELECT Id FROM Instructor WHERE Id = ?', id, (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false);
+                        return resolve([false, 'No matching instructor id']);
+                    }
+                    callback(null, true);
+                });
+            },
+            function execute(verification) {
+                if (!verification) return;
+                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
+                                FROM Class \
+                                JOIN Course ON Class.CourseId = Course.Id \
+                                JOIN Department ON Course.Dept = Department.Id \
+                                WHERE Class.Instructor = ?';
+                con.query(sql, id, (err, result) => {
+                    return err ? resolve([false]) : resolve(result);
+                });
+            }
+        ])
+    });
 }
 
 // TODO: for student.js
-function getMyCurrentEnrollments() {
+function getMyCurrentEnrollments(id, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Retrieves an array of all classes a student is currently taking
+    Input:
+        id: id of student [int]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If the id does not match a student id, returns [false, 'No matching student id'].
+        If current semester is not assigned yet in the DB, returns an empty array.
+        If the student is not currently taking any classes, returns an empty array. 
+        Otherwise, returns an array of objects that contain the classes' informations in each object.
+    */
+    return new Promise((resolve, reject) => {
+        async.waterfall([
+            function verifyStudentId(callback) {
+                con.query('SELECT Id FROM Student WHERE Id = ?', id, (err, result) => {
+                    if (err | result.length === 0) {
+                        callback(null, false);
+                        return resolve([false, 'No matching student id']);
+                    }
+                    callback(null, true);
+                })
+            },
+            function getCurrentSemester(verification, callback) {
+                if (!verification) return;
+                con.query('SELECT Name, Year FROM CurrentSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false, '', '');
+                        return resolve([]);
+                    }
+                    callback(null, true, result[0]['Year'], result[0]['Name']);
+                });
+            },
+            function execute(verification, year, semester) {
+                if (!verification) return;
+                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost\
+                            FROM Enrollment \
+                            JOIN Class ON Enrollment.ClassId = Class.Id \
+                            JOIN Course ON Class.CourseId = Course.Id \
+                            JOIN Instructor ON Class.Instructor = Instructor.Id \
+                            JOIN Department ON Course.Dept = Department.Id \
+                            WHERE Enrollment.StudentId = ? AND Class.Year = ? AND Class.Semester = ?'
+                con.query(sql, [id, year, semester], (err, result) => {
+                    return err ? resolve([false]) : resolve([result]);
+                });
+            }
+        ]);
+    });
+}
+
+function getMyNextEnrollments(id, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Retrieves an array of all classes a student will take next semester
+    Input:
+        id: id of student [int]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If the id does not match a student id, returns [false, 'No matching student id'].
+        If next semester is not assigned yet in the DB, returns an empty array.
+        If the student is not currently enrolled in any classes for next semester, returns an empty array. 
+        Otherwise, returns an array of objects that contain the classes' informations in each object.
+    */
+    return new Promise((resolve, reject) => {
+        async.waterfall([
+            function verifyStudentId(callback) {
+                con.query('SELECT Id FROM Student WHERE Id = ?', id, (err, result) => {
+                    if (err | result.length === 0) {
+                        callback(null, false);
+                        return resolve([false, 'No matching student id']);
+                    }
+                    callback(null, true);
+                })
+            },
+            function getNextSemester(verification, callback) {
+                if (!verification) return;
+                con.query('SELECT Name, Year FROM NextSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
+                    if (result.length === 0) {
+                        callback(null, false, '', '');
+                        return resolve([]);
+                    }
+                    callback(null, true, result[0]['Year'], result[0]['Name']);
+                });
+            },
+            function execute(verification, year, semester) {
+                if (!verification) return;
+                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
+                                FROM Enrollment \
+                                JOIN Class ON Enrollment.ClassId = Class.Id \
+                                JOIN Course ON Class.CourseId = Course.Id \
+                                JOIN Instructor ON Class.Instructor = Instructor.Id \
+                                JOIN Department ON Course.Dept = Department.Id \
+                                WHERE Enrollment.StudentId = ? AND Class.Year = ? AND Class.Semester = ?'
+                con.query(sql, [id, year, semester], (err, result) => {
+                    return err ? resolve([false]) : resolve([result]);
+                });
+            }
+        ]);
+    });
+
 }
 
 // TODO: for student.js
@@ -899,54 +1085,10 @@ function verifyInstructorLogin() {
 }
 
 // TODO: for student.js
-function verifyStudentLogin() { // TODO: upto here
-}
-
-// TODO: for db-setup.js
-function seed() {
+function verifyStudentLogin() {
 }
 
 // TODO: check if all features are implemented in the proposal
-
-
-/* Testing */
-(async () => {
-    const res1 = await createAccountType('Administrator', con);
-    const res2 = await createAccountType('Instructor', con);
-    const res3 = await createAccountType('Student', con);
-    const res4 = await createDepartment(1, 'Computer Science', con);
-    const res5 = await createDepartment(2, 'Electrical Engineering', con);
-    const res6 = await createDepartment(3, 'Computer Engineering', con);
-    const res7 = await createGrade('A', con);
-    const res8 = await createGrade('B', con);
-    const res9 = await createGrade('C', con);
-    const res10 = await createGrade('D', con);
-    const res11 = await createGrade('F', con);
-    const res12 = await createSemester('Winter', con);
-    const res13 = await createSemester('Spring', con);
-    const res14 = await createSemester('Summer', con);
-    const res15 = await createSemester('Fall', con);
-    const res16 = await assignCurrentSemester('Spring', 2021, con);
-    const res17 = await assignNextSemester('Fall', 2021, con);
-    const res18 = await createInstructor(1, 'John Connor', 'john.anthony.connor@gmail.com', con);
-    const res19 = await createInstructor(2, 'Hesham Auda', 'hauda@ccny.cuny.edu', con);
-    const res20 = await createInstructor(3, 'Akbar Islam', 'nysaifulislam@gmail.com', con);
-    const res21 = await createInstructor(4, 'Akira Kawaguchi', 'akawaguchi@ccny.cuny.edu', con);
-    const res22 = await createCourse(1, 'Database Systems', 1, 3, 1000.00, con);
-    const res23 = await createCourse(2, 'Data Structures', 1, 3, 1000.00, con);
-    const res24 = await createCourse(3, 'Algorithms', 1, 3, 1000.00, con);
-    const res25 = await createClass(32157, 1, 'H', 1, 2021, 'Spring', con);
-    const res26 = await createClass(32179, 1, 'M', 2, 2021, 'Spring', con);
-    const res27 = await createClass(34280, 1, 'A', 4, 2021, 'Fall', con);
-    const res28 = await createStudent(123, 'Saiful Islam', 123456789, con);
-    const res29 = await createStudent(456, 'Akbar Haider', 111111111, con);
-
-    // console.log(res);
-})();
-
-app.listen(5002, () => {
-    console.log('Server Started on Port 5002');
-});
 
 module.exports = {
     createAccountType,
@@ -975,5 +1117,7 @@ module.exports = {
     deleteClass,
     createStudent,
     assignGraduation,
-    assignProbation
+    assignProbation,
+    getMyCurrentEnrollments, // added by Saiful
+    getMyNextEnrollments // added by Saiful
 };

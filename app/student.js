@@ -18,6 +18,7 @@ function viewCourses(con) {
 function enrollInClass(classId, courseId, section, year, semester, studentId, con) { // TODO: repeating code
     /* 
     Purpose: Student enrolls in a class (adds enrollment to Enrollment table) either through specifying classId (1) or courseId, section, year, and semester (2) (don't have to specify both groups)
+    Warning: There must be a current semester and next semester assigned in the DB. // TODO: change this (not immediately necessary)
     Input:
         classId: class ID for the class the student wants to enroll in (if null, checks the courseId, section, year, and semester instead, otherwise, doesn't check) [int]
         courseId: course ID of the class [int]
@@ -194,3 +195,5 @@ function dropClass(classId, courseId, section, year, semester, studentId, con) {
         ])
     });
 }
+
+module.exports = {enrollInClass};

@@ -11,8 +11,7 @@
 8. Class(<ins>Id</ins>:number, Title:string, Section:string, Instructor:Instructor.Id, Dept:Department.Id, Year:number, Semester:Semester.Name, Credits:number, Cost:number)
 9. Student(<ins>Id</ins>:number, Name:string, Email:string, Credits:number, Registered:boolean, Probation:boolean, SSN:string)
 10. Enrollment(<ins>ClassId</ins>:Class.Id, <ins>StudentId</ins>:Student.Id, Grade:Grade.Name)
-11. ProgramAdvisor(<ins>Id</ins>:number, Name:string, Dept:Department.Id, Email:string)
-12. Login(<ins>Email</ins>:string, Password:string, <ins>AccountType</ins>:Account.Type)
+11. Login(<ins>Email</ins>:string, Password:string, <ins>AccountType</ins>:Account.Type)
 
 ## Previous Schemas
 1. Class(<ins>id</ins>, title, section, instructor, dept, year, semester, credits, cost)

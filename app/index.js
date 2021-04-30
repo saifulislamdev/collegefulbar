@@ -8,7 +8,8 @@ const bcrypt = require('bcryptjs');
 const administrator = require('./administrator.js');
 const async = require('async');
 
-// set up the database credientials and create connections 
+// set up the database credentials and create connections 
+// TODO: would be a good idea to put this in db-setup instead and change the imports in administrator.js, all-user.js, db-setup.js, seed.js, student.js, index.js, instructor.js
 const db = mysql.createConnection({ // Changed connection set up to work on my own local network
     host: '127.0.0.1', 
     user: 'root',
@@ -18,7 +19,8 @@ const db = mysql.createConnection({ // Changed connection set up to work on my o
     multipleStatements: true
 });
 
-// database connection                              
+// database connection         
+// TODO: delete this if you don't need it                     
 const connect = db.connect((error) => {
     if (error) {
         console.log(error);
