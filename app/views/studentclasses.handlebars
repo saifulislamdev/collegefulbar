@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Admin</title>
+</head>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/studentview"></a>Courses</li>
+            <li><a href="/studentdrop"></a>Drop</li>
+            <li><a href="/studentgrades"></a>Grades</li>
+            <li><a href="/studentclasses"></a> Classes</li>
+            <li><a href="/studentenrollments"></a> Enrollments</li>
+            <form method="post">
+                <button formaction="/logout" class="pure-button button-small">logout</button></center>
+            </form>
+        </ul>
+    </nav>
+</header>
+
+<body>
+
+    <section id="main" class="wrapper">
+        <div id="view" class="container">
+            <h5>View Classes By Semester</h5>
+            <table>
+                <tbody>
+                    <br>
+                    <td><a href="/studentview/currentclass">Current Semester Classes </a></td>
+                    <br></br>
+                    <td><a href="/studentview/nextclass">Next Semester Classes </a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5>List of All Classes</h5>
+            <table>
+                <tbody>
+                    <tr>
+                        <td> Class ID</td>
+                        <td> Course ID </td>
+                        <td> Section</td>
+                        <td> Instructor</td>
+                        <td> Semester</td>
+                        <td> Year</td>
+                    </tr>
+                    {{#each class}}
+
+                    <tr>
+                        <td>{{this.ClassId}}</td>
+                        <td>{{this.CourseId}}</td>
+                        <td>{{this.Section}}</td>
+                        <td>{{this.Instructor}}</td>
+                        <td>{{this.Year}}</td>
+                        <td>{{this.Semester}}</td>
+                        <td><a href="/EnrollClass/{{ClassId}}">Enroll </a></td>
+
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+</body>
+
+
+</html>

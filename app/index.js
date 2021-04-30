@@ -125,8 +125,6 @@ app.post('/auth/login', async (req, res) => {
             });
         } else {
             const account = results[0].AccountType;
-            req.session.user_id = results[0].id;
-            console.log("Logging in the user ID is: " + req.session.user_id);
             req.session.user_name = req.body.email;
             console.log("Logging in the username is: " + req.session.user_name);
             if (account == "student" || account == "Student") {
@@ -144,40 +142,14 @@ app.post('/auth/login', async (req, res) => {
 //function to let a student register 
 //------------------------------------------------------------------------------------------------
 app.post('/auth/register', async (req, res) => {
-    const name = req.body.name;
     const id = parseInt(req.body.id);
+    const name = req.body.name;
+    const ssn = parseInt(req.body.ssn);
     const email = req.body.email;
     const password = req.body.password;
-    const ssn = parseInt(req.body.ssn);
+   
 
     console.log(id,name,ssn,email,password);
-    // this is where we will take in the  email the user enters in the form and put inside our database and 
-    // if the email already exists then show them the message
-    // db.query('SELECT email FROM user WHERE email = ?', [email], async (error, results) => {
-    //     if (error) {
-    //         console.log(error);
-    //     }
-    //     if (results.length > 0) {
-    //         return res.render('register', {
-    //             message: 'The email already exists'
-    //         });
-    //     } else if (password !== passwordConfirm) {
-    //         return res.render('register', {
-    //             message: 'Passwords do not match'
-    //         });
-    //     }
-    //     let hashedPassword = await bcrypt.hash(password, 8);
-    //     console.log(hashedPassword);
-    //     insert into database
-    //     db.query('INSERT INTO user SET ?', { name: name, account: account, email: email, password: hashedPassword }, (error, results) => {
-    //         if (error) {
-    //             console.log(error);
-    //         } else {
-    //             console.log(results);
-    //             return res.redirect('/login');
-    //         }
-    //     });
-    // });
     student.registerAsStudent(id,name,ssn,email,password,db).then(result =>{
         console.log(result);
         return result;
@@ -630,12 +602,92 @@ app.post('/assignGraduation/submit', (req, res) => {
                                 return result[0];
                             });
                           });
+
+//################################# NEW STUDENT WORK ################################################
+
+app.get('/studentview', (req, res) => {
+    administrator.viewCourses(db).then(result =>{
+        console.log(result);
+        res.render('studentview', { title: 'courses', courses: result });
+       });
+ });
+
+
+ app.get('/studentclasses', (req, res) => {
+res.render('studentclasses');
+ 
+ });
+
+ app.get('/EnrollClass/:ClassId',(req,res)=>{
+    var id = req.params.ClassId;
+    console.log(id);
+    var sql = `SELECT * FROM class WHERE Id = ${id}`;
+    db.query(sql, function (err, rows,fields){
+        if(err) throw err;
+        console.log(rows);
+        res.render('enroll',{title: 'Update class', class: rows[0]});
+    });
+});  
+
+app.post('/enrollClass/submit', (req, res) => {
+    const studentId = parseInt(req.body.studentid);
+    const courseId = parseInt(req.body.courseId);
+    const classId = parseInt(req.body.classid);
+    const section = req.body.section;
+    const year = parseInt(req.body.year);
+    const semester = req.body.semester;
+   console.log(classId, courseId, section, year, semester, studentId);
+         student.enrollInClass(classId, courseId, section, year, semester, studentId, db).then(result =>{
+             console.log(result);
+             return result;
+             
+         }).then(result=>{
+             res.redirect('/studentclasses');
+             return result[0];
+         });
+ 
+       });    
+
+       app.get('/studentview/currentclass', (req, res) => {
+        student.getCurrentSemClasses(db).then(result=>{
+            console.log(result);
+            return result;
+        }).then(result =>{
+           res.render('studentclasses',{title: ' class', class: result});
+        });
+     });
+
+     app.get('/studentview/nextclass', (req, res) => {
+        student.getNextSemClasses(db).then(result=>{
+            console.log(result);
+            return result;
+        }).then(result =>{
+           res.render('studentclasses',{title: ' class', class: result});
+        });
+     });
+
+     app.get('/studentenrollments', (req, res) => {
+        res.render('checkenrollments');
+         
+         });
+     app.post('/checkcurrentenroll/submit', (req, res) => {
+         const id = parseInt(req.body.studentid);
+         console.log(id);
+
+        // student.getMyCurrentEnrollments(id,db).then(result=>{
+        //     console.log(result);
+        //     return result;
+        // }).then(result =>{
+            
+        // res.render('checkenrollments',{title: ' class', class: result});
+    
+        // });
+     });
+
 //if logout button is pressed then log the user out of this session
 //--------------------------------------------------------------------------------
 app.post('/logout', async (req, res) => {
-    delete req.session.user_id;
     delete req.session.user_name;
-    console.log("After Logging out the user ID is: " + req.session.user_id);
     console.log("After Logging out the username is: " + req.session.user_name);
     res.redirect('/');
 });
