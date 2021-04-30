@@ -33,8 +33,44 @@
 </header>
 
 <body>
+    <section id="main" class="wrapper">
+        <div id="view" class="container">
+            <h5>View Classes</h5>
+            <table>
+                <tbody>
+                    <br>
+                    <td><a href="/view/current">Current Semester Classes </a></td>
+                    <br></br>
+                    <td><a href="/view/next">Next Semester Classes </a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td> Class ID</td>
+                        <td> Course ID </td>
+                        <td> Section</td>
+                        <td> Instructor</td>
+                        <td> Semester</td>
+                        <td> Year</td>
+                    </tr>
+                    {{#each class}}
 
-    <section>
+                    <tr>
+                        <td>{{this.ClassId}}</td>
+                        <td>{{this.CourseId}}</td>
+                        <td>{{this.Section}}</td>
+                        <td>{{this.Instructor}}</td>
+                        <td>{{this.Year}}</td>
+                        <td>{{this.Semester}}</td>
+                        <td><a href="/EditClass/{{ClassId}}">Edit </a></td>
+                        <td><a href="/deleteClass/{{ClassId}}">Delete </a></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
 
     </section>
     <section id="main" class="wrapper">
@@ -69,7 +105,7 @@
 
                     <div class="form-group">
                         <label for="year"></label>
-                        <input type="text" class="form-control" id="year" name="year" placeholder="Enter Year">
+                        <input type="number" class="form-control" id="year" name="year" placeholder="Enter Year">
                     </div>
 
                     <button type="submit" class="btn btn-primary">Add Course</button>
@@ -78,6 +114,8 @@
         </div>
 
     </section>
+
+
 
 </body>
 

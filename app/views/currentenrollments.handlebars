@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -6,21 +9,19 @@
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
     <link rel="stylesheet" href="/assets/css/style.css">
-    <title>Student</title>
+    <title>Admin</title>
 </head>
 <header>
     <nav>
-        <h4>Collegefulbar</h4>
         <ul>
             <li><a href="/studentview"></a>Courses</li>
             <li><a href="/studentdrop"></a>Drop</li>
             <li><a href="/studentgrades"></a>Grades</li>
             <li><a href="/studentclasses"></a> Classes</li>
-            <li><a href="/studentenrollments"></a> Enrollments</li>
-
+            <li><a href="/studentenrollments"></a> Check Enrollments</li>
+            <li><a href="/studentcurrent"></a> Current Enrollments</li>
             <form method="post">
                 <button formaction="/logout" class="pure-button button-small">logout</button></center>
-
             </form>
         </ul>
     </nav>
@@ -29,58 +30,32 @@
 <body>
 
     <section id="main" class="wrapper">
-
-        <div id="enroll" class="container">
-
-
-            <h2>Enroll Classes</h2>
-
-        </div>
-
-        <div class="container">
-
-        </div>
-
-
-        <div id="drop" class="container">
-
-            <h2>Drop Classes</h2>
-        </div>
-
-        <div class="container">
-
-        </div>
-
-
         <div id="view" class="container">
+            <h5>View Enrollments By Semester</h5>
+            <h5>List of Enrollment</h5>
+            <table>
+                <tbody>
+                    <tr>
+                        <td> Class ID</td>
+                        <td> Student ID </td>
+                        <td> Grade</td>
+                    </tr>
+                    {{#each class}}
 
-            <h2>View Class</h2>
+                    <tr>
+                        <td>{{this.ClassId}}</td>
+                        <td>{{this.StudentId}}</td>
+                        <td>{{this.Grade}}</td>
+                        <td><a href="/dropclass/{{ClassId}}">Drop </a></td>
 
-
-
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </div>
-
-        <div class="container">
-
-        </div>
-
-
-        <div id="grades" class="container">
-
-            <h2>Grades</h2>
-
-        </div>
-
-
-        <div class="container">
-
-        </div>
-
-
-
-
 
     </section>
-
-
 </body>
+
+
+</html>

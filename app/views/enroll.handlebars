@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Admin</title>
+</head>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/studentview"></a>Courses</li>
+            <li><a href="/studentdrop"></a>Drop</li>
+            <li><a href="/studentgrades"></a>Grades</li>
+            <li><a href="/studentclasses"></a> Classes</li>
+            <li><a href="/studentenrollments"></a> Enrollments</li>
+            <form method="post">
+                <button formaction="/logout" class="pure-button button-small">logout</button></center>
+            </form>
+        </ul>
+    </nav>
+</header>
+
+<body>
+
+    <section id="main" class="wrapper">
+        <div id="class" class="container">
+
+            <div class="card-body">
+                <form action="/enrollClass/submit" method="POST">
+                    <div class="form-group">
+                        <label for="studentid"></label>
+                        <input type="text" class="form-control" id="studentid" name="studentid"
+                            placeholder="Enter Student ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="classid"></label>
+                        <input type="text" class="form-control" value={{class.Id}} id="classid" name="classid"
+                            placeholder="Enter Class ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="courseId"></label>
+                        <input type="text" class="form-control" value={{class.CourseId}} id="courseId" name="courseId"
+                            placeholder="Enter Course ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="section"></label>
+                        <input type="text" class="form-control" value={{class.Section}} id="section" name="section"
+                            placeholder="Enter section">
+                    </div>
+                    <div class="form-group">
+                        <label for="year"></label>
+                        <input type="text" class="form-control" value={{class.Year}} id="year" name="year"
+                            placeholder="Enter Year">
+                    </div>
+                    <div class="form-group">
+                        <label for="semester"></label>
+                        <input type="text" class="form-control" value={{class.Semester}} id="semester" name="semester"
+                            placeholder="Enter Semester">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Finish Enrolling Class</button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+</body>
+
+
+</html>
