@@ -88,7 +88,7 @@ function createTables(con) {
 }
 
 // creates all tables needed for the app
-// createTables(con);
+//createTables(con);
 
 function deleteTable(sql, successIndicator, con) {
     /* helper function for deleteTables() */
@@ -103,7 +103,6 @@ function deleteTable(sql, successIndicator, con) {
 function deleteTables(con) {
     /* deletes all tables in the DB that the app uses */
     deleteTable("DROP TABLE IF EXISTS Login", "Login", con);
-    deleteTable("DROP TABLE IF EXISTS ProgramAdvisor", "ProgramAdvisor", con); // TODO: Akbar, if this table is not in your DB anymore, get rid of this line
     deleteTable("DROP TABLE IF EXISTS Enrollment", "Enrollment", con);
     deleteTable("DROP TABLE IF EXISTS Class", "Class", con);
     deleteTable("DROP TABLE IF EXISTS Course", "Course", con);
@@ -111,7 +110,6 @@ function deleteTables(con) {
     deleteTable("DROP TABLE IF EXISTS NextSemester", "NextSemester", con);
     deleteTable("DROP TABLE IF EXISTS CurrentSemester", "CurrentSemester", con);
     deleteTable("DROP TABLE IF EXISTS Semester", "Semester", con);
-    deleteTable("DROP TABLE IF EXISTS PendingStudent", "PendingStudent", con); // TODO: Akbar, if this table is not in your DB anymore, get rid of this line
     deleteTable("DROP TABLE IF EXISTS Instructor", "Instructor", con);
     deleteTable("DROP TABLE IF EXISTS Grade", "Grade", con);
     deleteTable("DROP TABLE IF EXISTS Department", "Department", con);
@@ -119,7 +117,7 @@ function deleteTables(con) {
 }
 
 // delete all tables in the app
-// deleteTables(con);
+//deleteTables(con);
 
 app.listen(5001, () => {
     console.log("Server Started on Port 5001");

@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const administrator = require('./administrator.js');
 const allUsers = require('./all-users');
-const instructor = require('./instructor');
+const instructor = require('./instructor.js');
 const student = require('./student');
 const con = require('./index').con;
 
@@ -29,7 +29,7 @@ async function seed() {
     const res20 = await administrator.createInstructor(2, 'Hesham Auda', 'hauda@ccny.cuny.edu', con);
     const res21 = await administrator.createInstructor(3, 'Akbar Islam', 'nysaifulislam@gmail.com', con);
     const res22 = await administrator.createInstructor(4, 'Akira Kawaguchi', 'akawaguchi@ccny.cuny.edu', con);
-    const res23 = await administrator.registerAsInstructor(1, 'John Connor', 'john.anthony.connor@gmail.com', 'nothingbeatstwizzle', con); // TODO: Akbar, change this to instructor.registerAsInstructor() when you move registerAsInstructor() to instructor.js
+    const res23 = await instructor.registerAsInstructor(1, 'John Connor', 'john.anthony.connor@gmail.com', 'nothingbeatstwizzle', con); // TODO: Akbar, change this to instructor.registerAsInstructor() when you move registerAsInstructor() to instructor.js
     const res24 = await administrator.createCourse(1, 'Database Systems', 1, 3, 1000.00, con);
     const res25 = await administrator.createCourse(2, 'Data Structures', 1, 3, 1000.00, con);
     const res26 = await administrator.createCourse(3, 'Algorithms', 1, 3, 1000.00, con);
@@ -43,16 +43,16 @@ async function seed() {
     const res34 = await administrator.createStudent(123, 'Saiful Islam', 123456789, con);
     const res35 = await administrator.createStudent(456, 'Akbar Haider', 111111111, con);
     const res36 = await administrator.createStudent(1, 'John Doe', 987654321, con);
-    const res37 = await administrator.registerAsStudent(123, 'Saiful Islam', 123456789, 'nysaifulislam@gmail.com', 'akbarisawesome', con);
+    const res37 = await student.registerAsStudent(123, 'Saiful Islam', 123456789, 'nysaifulislam@gmail.com', 'akbarisawesome', con);
     const res38 = await student.enrollInClass(32157, null, null, null, null, 123, con);
     const res39 = await student.enrollInClass(32132, null, null, null, null, 123, con);
     const res40 = await student.enrollInClass(32157, null, null, null, null, 456, con);
     const res41 = await student.enrollInClass(34271, null, null, null, null, 123, con);
     const res42 = await student.enrollInClass(34280, null, null, null, null, 123, con);
     const res43 = await student.enrollInClass(34280, null, null, null, null, 456, con);    
-    const res44 = await administrator.assignGrade(1, 32157, 123, 'A', con); // TODO: Akbar, change this to instructor.assignGrade() when you move assignGrade() to instructor.js
-    const res45 = await administrator.assignGrade(1, 32157, 456, 'A', con); // TODO: Akbar, change this to instructor.assignGrade() when you move assignGrade() to instructor.js
-    const res46 = await administrator.assignGrade(2, 32132, 123, 'A', con); // TODO: Akbar, change this to instructor.assignGrade() when you move assignGrade() to instructor.js
+    const res44 = await instructor.assignGrade(1, 32157, 123, 'A', con); // TODO: Akbar, change this to instructor.assignGrade() when you move assignGrade() to instructor.js
+    const res45 = await instructor.assignGrade(1, 32157, 456, 'A', con); // TODO: Akbar, change this to instructor.assignGrade() when you move assignGrade() to instructor.js
+    const res46 = await instructor.assignGrade(2, 32132, 123, 'A', con); // TODO: Akbar, change this to instructor.assignGrade() when you move assignGrade() to instructor.js
 }
 
 app.listen(5002, () => {

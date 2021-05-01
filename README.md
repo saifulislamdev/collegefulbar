@@ -24,7 +24,6 @@ npm start
 	DATABASE = test
 	DATABASE_PASSWORD = 123
 	DATABASE_USER = root
-	DATABASE_PORT = 3000
 	DATABASE_HOST = localhost
 ```
 7. Go to index.js and inside the "CreateConnection" method for mysql connection do the following:
@@ -32,7 +31,6 @@ npm start
     host: process.env.DATABASE_HOST, 
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
-    port: process.env.DATABASE_PORT
     database: process.env.DATABASE,
     multipleStatements: true   
 ```

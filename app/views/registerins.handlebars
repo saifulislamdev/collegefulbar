@@ -28,24 +28,34 @@
     <div class="container mt-4">
         <div class="card">
             <div class="header">
-                Login Form
+                Instructor Register Form
             </div>
             <div class="card-body">
-                <form action="/auth/admin/login" method="POST">
+                <form action="/auth/ins/register" method="POST">
 
                     <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email">
+                        <label for="insid">Instructor ID</label>
+                        <input type="text" class="form-control" id="insid" name="insid" placeholder="Instructor ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="insname">Instructor Name</label>
+                        <input type="text" class="form-control" id="insname" name="insname"
+                            placeholder="Instructor Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="insemail">Email Address</label>
+                        <input type="email" class="form-control" id="insemail" name="insemail"
+                            placeholder="Enter Email">
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password"
+                        <label for="inspassword">Password</label>
+                        <input type="password" class="form-control" id="inspassword" name="inspassword"
                             placeholder="Enter Password">
                     </div>
 
 
-                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-primary">Register Instructor</button>
                 </form>
 
             </div>

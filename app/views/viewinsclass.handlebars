@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,16 +6,18 @@
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
     <link rel="stylesheet" href="/assets/css/style.css">
-    <title>Admin</title>
+    <title>Student</title>
 </head>
 <header>
     <nav>
+        <h4>Collegefulbar</h4>
         <ul>
-            <li><a href="/studentview"></a>Courses</li>
-            <li><a href="/studentclasses"></a> Classes</li>
-            <li><a href="/studentenrollments"></a> Enrollments</li>
+            <li><a href="/viewinsclass"></a>Classes</li>
+            <li><a href="/inswork"></a>Instructor Changes</li>
+
             <form method="post">
                 <button formaction="/logout" class="pure-button button-small">logout</button></center>
+
             </form>
         </ul>
     </nav>
@@ -27,18 +26,12 @@
 <body>
 
     <section id="main" class="wrapper">
+
+    </section>
+    <section id="main" class="wrapper">
         <div id="view" class="container">
-            <h5>View Classes By Semester</h5>
-            <table>
-                <tbody>
-                    <br>
-                    <td><a href="/studentview/currentclass">Current Semester Classes </a></td>
-                    <br></br>
-                    <td><a href="/studentview/nextclass">Next Semester Classes </a></td>
-                    </tr>
-                </tbody>
-            </table>
-            <h5>List of All Classes</h5>
+            <h5>View Classes</h5>
+
             <table>
                 <tbody>
                     <tr>
@@ -52,14 +45,12 @@
                     {{#each class}}
 
                     <tr>
-                        <td>{{this.ClassId}}</td>
+                        <td>{{this.Id}}</td>
                         <td>{{this.CourseId}}</td>
                         <td>{{this.Section}}</td>
                         <td>{{this.Instructor}}</td>
                         <td>{{this.Year}}</td>
                         <td>{{this.Semester}}</td>
-                        <td><a href="/EnrollClass/{{ClassId}}">Enroll </a></td>
-
                     </tr>
                     {{/each}}
                 </tbody>
@@ -67,7 +58,7 @@
         </div>
 
     </section>
+    </section>
+
+
 </body>
-
-
-</html>

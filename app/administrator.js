@@ -805,281 +805,7 @@ function removeProbation(id, con) { // TODO: Akbar, you can move this
     });
 }
 
-// TODO: for instructor.js
-function getMyCurrentlyTaughtClasses(id, con) { // TODO: Akbar, you can move this
-    /* 
-    Purpose: Retrieves an array of all classes an instructor is teaching for the current semester
-    Input:
-        id: id of instructor [int]
-        con: connection to DB (result of createConnection() method)
-    Output: [Promise]
-        If an error occurs, returns an array with only one element of false (i.e. [false])
-        If the id does not match an instructor id, returns [false, 'No matching instructor id']
-        If current semester is not assigned yet in the DB, returns an empty array.
-        If the instructor is not teaching any classes yet for the current semester, returns an empty array. 
-        Otherwise, returns an array of objects that contain the classes' information in each object.
-    */
-    return new Promise((resolve, reject) => {
-        async.waterfall([
-            function verifyInstructor(callback) {
-                con.query('SELECT Id FROM Instructor WHERE Id = ?', id, (err, result) => {
-                    if (result.length === 0) {
-                        callback(null, false);
-                        return resolve([false, 'No matching instructor id']);
-                    }
-                    callback(null, true);
-                });
-            },
-            function getCurrentSemester(verification, callback) {
-                if (!verification) return;
-                con.query('SELECT Name, Year FROM CurrentSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
-                    if (result.length === 0) {
-                        callback(null, false, '', '');
-                        return resolve([]);
-                    }
-                    callback(null, true, result[0]['Year'], result[0]['Name']);
-                });
-            },
-            function execute(verification, year, semester) {
-                if (!verification) return;
-                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
-                            FROM Class \
-                            JOIN Course ON Class.CourseId = Course.Id \
-                            JOIN Department ON Course.Dept = Department.Id \
-                            WHERE Class.Instructor = ? AND Class.Year = ? AND Class.Semester = ?';
-                con.query(sql, [id, year, semester], (err, result) => {
-                    return err ? resolve([false]) : resolve(result);
-                });
-            }
-        ])
-    });
-}
 
-// TODO: for instructor.js
-function getMyTaughtClasses(id, con) { // TODO: Akbar, you can move this
-    /* 
-    Purpose: Retrieves an array of all classes an instructor has taught, is currently teaching, or will teach
-    Input:
-        id: id of instructor [int]
-        con: connection to DB (result of createConnection() method)
-    Output: [Promise]
-        If an error occurs, returns an array with only one element of false (i.e. [false])
-        If the id does not match an instructor id, returns [false, 'No matching instructor id']
-        If the instructor has not taught classes in the past, is not currently teaching, and not yet teaching any class in the future, returns an empty array. 
-        Otherwise, returns an array of objects that contain the classes' information in each object.
-    */
-    return new Promise((resolve, reject) => {
-        async.waterfall([
-            function verifyInstructor(callback) {
-                con.query('SELECT Id FROM Instructor WHERE Id = ?', id, (err, result) => {
-                    if (result.length === 0) {
-                        callback(null, false);
-                        return resolve([false, 'No matching instructor id']);
-                    }
-                    callback(null, true);
-                });
-            },
-            function execute(verification) {
-                if (!verification) return;
-                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
-                                FROM Class \
-                                JOIN Course ON Class.CourseId = Course.Id \
-                                JOIN Department ON Course.Dept = Department.Id \
-                                WHERE Class.Instructor = ?';
-                con.query(sql, id, (err, result) => {
-                    return err ? resolve([false]) : resolve(result);
-                });
-            }
-        ])
-    });
-}
-
-// TODO: for student.js
-function getMyCurrentEnrollments(id, con) { // TODO: Akbar, you can move this
-    /* 
-    Purpose: Retrieves an array of all classes a student is currently taking
-    Input:
-        id: id of student [int]
-        con: connection to DB (result of createConnection() method)
-    Output: [Promise]
-        If an error occurs, returns an array with only one element of false (i.e. [false])
-        If the id does not match a student id, returns [false, 'No matching student id'].
-        If current semester is not assigned yet in the DB, returns an empty array.
-        If the student is not currently taking any classes, returns an empty array. 
-        Otherwise, returns an array of objects that contain the classes' information in each object.
-    */
-    return new Promise((resolve, reject) => {
-        async.waterfall([
-            function verifyStudentId(callback) {
-                con.query('SELECT Id FROM Student WHERE Id = ?', id, (err, result) => {
-                    if (err | result.length === 0) {
-                        callback(null, false);
-                        return resolve([false, 'No matching student id']);
-                    }
-                    callback(null, true);
-                })
-            },
-            function getCurrentSemester(verification, callback) {
-                if (!verification) return;
-                con.query('SELECT Name, Year FROM CurrentSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
-                    if (result.length === 0) {
-                        callback(null, false, '', '');
-                        return resolve([]);
-                    }
-                    callback(null, true, result[0]['Year'], result[0]['Name']);
-                });
-            },
-            function execute(verification, year, semester) {
-                if (!verification) return;
-                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost\
-                            FROM Enrollment \
-                            JOIN Class ON Enrollment.ClassId = Class.Id \
-                            JOIN Course ON Class.CourseId = Course.Id \
-                            JOIN Instructor ON Class.Instructor = Instructor.Id \
-                            JOIN Department ON Course.Dept = Department.Id \
-                            WHERE Enrollment.StudentId = ? AND Class.Year = ? AND Class.Semester = ?'
-                con.query(sql, [id, year, semester], (err, result) => {
-                    return err ? resolve([false]) : resolve(result);
-                });
-            }
-        ]);
-    });
-}
-
-function getMyNextEnrollments(id, con) { // TODO: Akbar, you can move this
-    /* 
-    Purpose: Retrieves an array of all classes a student will take next semester
-    Input:
-        id: id of student [int]
-        con: connection to DB (result of createConnection() method)
-    Output: [Promise]
-        If an error occurs, returns an array with only one element of false (i.e. [false])
-        If the id does not match a student id, returns [false, 'No matching student id'].
-        If next semester is not assigned yet in the DB, returns an empty array.
-        If the student is not currently enrolled in any classes for next semester, returns an empty array. 
-        Otherwise, returns an array of objects that contain the classes' information in each object.
-    */
-    return new Promise((resolve, reject) => {
-        async.waterfall([
-            function verifyStudentId(callback) {
-                con.query('SELECT Id FROM Student WHERE Id = ?', id, (err, result) => {
-                    if (err | result.length === 0) {
-                        callback(null, false);
-                        return resolve([false, 'No matching student id']);
-                    }
-                    callback(null, true);
-                })
-            },
-            function getNextSemester(verification, callback) {
-                if (!verification) return;
-                con.query('SELECT Name, Year FROM NextSemester ORDER BY DateAdded DESC LIMIT 1', (err, result) => {
-                    if (result.length === 0) {
-                        callback(null, false, '', '');
-                        return resolve([]);
-                    }
-                    callback(null, true, result[0]['Year'], result[0]['Name']);
-                });
-            },
-            function execute(verification, year, semester) {
-                if (!verification) return;
-                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
-                                FROM Enrollment \
-                                JOIN Class ON Enrollment.ClassId = Class.Id \
-                                JOIN Course ON Class.CourseId = Course.Id \
-                                JOIN Instructor ON Class.Instructor = Instructor.Id \
-                                JOIN Department ON Course.Dept = Department.Id \
-                                WHERE Enrollment.StudentId = ? AND Class.Year = ? AND Class.Semester = ?'
-                con.query(sql, [id, year, semester], (err, result) => {
-                    return err ? resolve([false]) : resolve(result);
-                });
-            }
-        ]);
-    });
-}
-
-// TODO: for student.js
-function getAllMyEnrollments(id, con) { // TODO: Akbar, you can move this
-    /* 
-   Purpose: Retrieves an array of all classes a student has taken, currently taking, and will take (all enrollments)
-   Input:
-       id: id of student [int]
-       con: connection to DB (result of createConnection() method)
-   Output: [Promise]
-       If an error occurs, returns an array with only one element of false (i.e. [false])
-       If the id does not match a student id, returns [false, 'No matching student id'].
-       If the student has not taken classes in the past, not currently taking any classes, and not yet enrolled in any classes in the future, returns an empty array. 
-       Otherwise, returns an array of objects that contain the classes' information in each object.
-   */
-    return new Promise((resolve, reject) => {
-        async.waterfall([
-            function verifyStudentId(callback) {
-                con.query('SELECT Id FROM Student WHERE Id = ?', id, (err, result) => {
-                    if (err | result.length === 0) {
-                        callback(null, false);
-                        return resolve([false, 'No matching student id']);
-                    }
-                    callback(null, true);
-                })
-            },
-            function execute(verification) {
-                if (!verification) return;
-                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost \
-                                    FROM Enrollment \
-                                    JOIN Class ON Enrollment.ClassId = Class.Id \
-                                    JOIN Course ON Class.CourseId = Course.Id \
-                                    JOIN Instructor ON Class.Instructor = Instructor.Id \
-                                    JOIN Department ON Course.Dept = Department.Id \
-                                    WHERE Enrollment.StudentId = ? \
-                                    ORDER BY YEAR DESC'
-                con.query(sql, id, (err, result) => {
-                    return err ? resolve([false]) : resolve(result);
-                });
-            }
-        ]);
-    });
-}
-
-// TODO: for student.js
-function viewMyGrades(id, con) { // TODO: Akbar, you can move this
-    /* 
-    Purpose: Retrieves an array of all grades a student has received from their enrollments
-    Input:
-        id: id of student [int]
-        con: connection to DB (result of createConnection() method)
-    Output: [Promise]
-        If an error occurs, returns an array with only one element of false (i.e. [false])
-        If the id does not match a student id, returns [false, 'No matching student id'].
-        If the student has not received any grades yet, returns an empty array. 
-        Otherwise, returns an array of objects that contain the classes' information and grade in each object.
-    */
-    return new Promise((resolve, reject) => {
-        async.waterfall([
-            function verifyStudentId(callback) {
-                con.query('SELECT Id FROM Student WHERE Id = ?', id, (err, result) => {
-                    if (err | result.length === 0) {
-                        callback(null, false);
-                        return resolve([false, 'No matching student id']);
-                    }
-                    callback(null, true);
-                })
-            },
-            function execute(verification) {
-                if (!verification) return;
-                let sql = 'SELECT Class.Id AS ClassId, Class.CourseId, Course.Title, Class.Section, Instructor.Name AS Instructor, Class.Year, Class.Semester, Department.Name AS Department, Course.Credits, Course.Cost, Enrollment.Grade\
-                                FROM Enrollment \
-                                JOIN Class ON Enrollment.ClassId = Class.Id \
-                                JOIN Course ON Class.CourseId = Course.Id \
-                                JOIN Instructor ON Class.Instructor = Instructor.Id \
-                                JOIN Department ON Course.Dept = Department.Id \
-                                WHERE Enrollment.StudentId = ? AND Enrollment.Grade IS NOT NULL'
-                con.query(sql, id, (err, result) => {
-                    return err ? resolve([false]) : resolve(result);
-                });
-            }
-        ]);
-    });
-
-}
 
 // TODO: for instructor.js
 function assignGrade(instructorId, classId, studentId, grade, con) { // TODO: Akbar, you can move this
@@ -1448,6 +1174,45 @@ function getInstructorIdFromEmail(email, con) {
     });
 }
 
+
+function createAdministratorLogin(email, password, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Allows for an administrator create an account for another administrator
+    Input:
+        email: email address of the new administrator (must be unique; not used by other administrators) [string]
+        password: password for the new administrator's account [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If email is not a valid email, returns [false, 'Email not valid'].
+        If email is already used by an administrator account, returns [false, 'Email address already used by an administrator account'].
+        If there is no error, returns an array with only one element of true (i.e. [true])
+        If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Name' at row 1"]).
+    */
+    // TODO: improvements can be done (not immediately necessary)
+    return new Promise((resolve, reject) => {
+        let emailValidator = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/; // TODO: not necessary to use regex
+        if (!emailValidator.test(email)) return resolve([false, 'Email not valid']); // TODO: update here after changing regex
+        async.waterfall([
+            function verifyUniqueEmail(callback) {
+                con.query("SELECT Email FROM Login WHERE Email = ? AND AccountType = 'Administrator'", email, (err, result) => {
+                    if (result.length > 0) {
+                        callback(null, false);
+                        return resolve([false, 'Email address already used by an administrator account']);
+                    }
+                    callback(null, true);
+                });
+            },
+            function execute(verification) {
+                if (!verification) return;
+                let sql = 'INSERT INTO Login VALUES (?)';
+                con.query(sql, [[email, password, 'Administrator']], (err, result) => {
+                    return err ? resolve([false, err.sqlMessage]) : resolve([true]);
+                });
+            }
+        ]);
+    })
+}
+
 // TODO: check if all features are implemented in the proposal
 
 module.exports = {
@@ -1478,17 +1243,10 @@ module.exports = {
     createStudent,
     assignGraduation,
     assignProbation,
-    getMyCurrentEnrollments, // added by Saiful
-    getMyNextEnrollments, // added by Saiful
-    getAllMyEnrollments, // added by Saiful
-    assignGrade, // added by Saiful
-    viewMyGrades, // added by Saiful
+    removeProbation,
+    getCurrentSemClasses,
+    getNextSemClasses,
     createAdministratorLogin, // added by Saiful
-    registerAsInstructor, // added by Saiful
-    registerAsStudent, // added by Saiful
-    verifyAdministratorLogin, // added by Saiful
-    verifyInstructorLogin, // added by Saiful
-    verifyStudentLogin, // added by Saiful
-    getStudentIdFromEmail, // added by Saiful
-    getInstructorIdFromEmail // added by Saiful
+    verifyAdministratorLogin // added by Saiful
+    
 };

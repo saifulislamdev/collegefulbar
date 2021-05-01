@@ -9,6 +9,8 @@ const administrator = require('./administrator.js');
 const student = require('./student.js');
 const instructor = require('./instructor.js');
 const dotenv = require('dotenv');
+const allusers = require('./all-users.js');
+
 dotenv.config({path: './.env'});
 // set up the database credentials and create connections 
 // TODO: would be a good idea to put this in db-setup instead and change the imports in administrator.js, all-user.js, db-setup.js, seed.js, student.js, index.js, instructor.js
@@ -27,18 +29,7 @@ const db = mysql.createConnection({ // Changed connection set up to work on my o
 //     database: 'Collegefulbar',
 //     port: 3306, // create this option for me in the .env
 //     multipleStatements: true
-// });
-// database connection         
-// TODO: delete this if you don't need it                     
-const connect = db.connect((error) => {
-    if (error) {
-        console.log(error);
-    } else {
-        console.log("MySQL Server Connected");
-        
-    }
-});
-
+// });      
 
 //define uses and set views
 app.use(express.static('static'));
@@ -48,30 +39,6 @@ app.use(express.urlencoded());
 app.engine('handlebars', Handlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
-
-//check for login
-//as of right not using this function
-//not used as of right now
-//-----------------------------------
-function checkAuth(req, res, next) {
-    if (!req.session.user_id) {
-        res.render(302, '/login');
-    } else {
-        next();
-    }
-}
-//-----------------------------------
-
-//debug on console 
-//-------------------------------------------------------------------------------------------------------------------------------
-function debuglog(req, res, next) {
-    console.debug(`${req.method} -- ${req.path} (params: ${JSON.stringify(req.params)}) [body: ${JSON.stringify(req.body)}]`);
-    next();
-}
-//-------------------------------------------------------------------------------------------------------------------------------
-
-
-//did not implement the multiple query function yet
 
 
 //load home screen
@@ -84,15 +51,27 @@ app.get("/", (req, res) => {
 
 //upon clicking login render the login html page
 //------------------------------------------------
-app.get('/login', (req, res) => {
+app.get('/loginadmin', (req, res) => {
     res.render('login');
 });
 //------------------------------------------------
+app.get('/loginstudent', (req, res) => {
+    res.render('studentlogin');
+});
+//---------
 
+app.get('/loginins', (req, res) => {
+    res.render('instructorlogin');
+});
 //upon clicking register 
 //--------------------------------------------------
-app.get('/register', (req, res) => {
+app.get('/registerstudent', (req, res) => {
     res.render('register');
+});
+//--------------------------------------------------
+
+app.get('/registerins', (req, res) => {
+    res.render('registerins');
 });
 //--------------------------------------------------
 
@@ -106,39 +85,60 @@ app.get('/user/:email', (req, res) => {
 
 //From login screen query database and if if user exists then log them in
 //------------------------------------------------------------------------------------
-app.post('/auth/login', async (req, res) => {
-    const { account, email, password } = req.body;
-    if (!email || !password || !account) {
+app.post('/auth/admin/login', async (req, res) => {
+    const {email, password } = req.body;
+    if (!email || !password) {
         return res.status(400).render('login', {
             message: 'Fields can not be empty'
         });
     }
-    db.query("SELECT * FROM login WHERE Email =?", [email], async (error, results) => {
-        console.log(results);
-        if (results == 0) {
-            res.status(401).render('login', {
-                message: 'Account does not exist'
-            });
-        }
-        if (!results || password != results[0].Password) {
-            res.status(401).render('login', {
-                message: 'Email or password is Incorrect'
-            });
-        } else {
-            const account = results[0].AccountType;
-            req.session.user_name = req.body.email;
-            console.log("Logging in the username is: " + req.session.user_name);
-            if (account == "student" || account == "Student") {
-                res.redirect(`/user/${req.session.user_name}`);
-            }
-            if (account == "admin" || account == "Admin") {
-                res.redirect(`/user/admin-panel/${req.session.user_name}`);
-            }
-        }
-    });
+    administrator.verifyAdministratorLogin(email,password,db).then(result =>{
+        req.session.user_name = req.body.email;
+        console.log("Logging in the username is: " + req.session.user_name);
+        return result;
+    }).then(result=>{
+        res.redirect(`/user/admin-panel/${req.session.user_name}`);
+        return result[0];
+    });               
+
 });
 //------------------------------------------------------------------------------------
+app.post('/auth/student/login', async (req, res) => {
+    const {email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).render('login', {
+            message: 'Fields can not be empty'
+        });
+    }
+    student.verifyStudentLogin(email,password,db).then(result =>{
+        req.session.user_name = req.body.email;
+        console.log("Logging in the username is: " + req.session.user_name);
+        return result;
+    }).then(result=>{
+        res.redirect('/studentview');
+        return result[0];
+    });               
 
+});
+
+app.post('/auth/instructor/login', async (req, res) => {
+    const {email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).render('login', {
+            message: 'Fields can not be empty'
+        });
+    }
+    instructor.verifyInstructorLogin(email,password,db).then(result =>{
+        req.session.user_name = req.body.email;
+        console.log("Logging in the username is: " + req.session.user_name);
+        return result;
+    }).then(result=>{
+        
+        res.render('instructorpanel');
+        return result[0];
+    });               
+
+});
 
 //function to let a student register 
 //------------------------------------------------------------------------------------------------
@@ -156,12 +156,30 @@ app.post('/auth/register', async (req, res) => {
         return result;
       
     }).then(result =>{
-        res.redirect('/login');
+        res.redirect('/loginstudent');
         return result[0];
     });
 });
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------
+
+app.post('/auth/ins/register', async (req, res) => {
+    const id = parseInt(req.body.insid);
+    const name = req.body.insname;
+    const email = req.body.insemail;
+    const password = req.body.inspassword;
+   
+
+    console.log(id,name,email,password);
+    instructor.registerAsInstructor(id,name,email,password,db).then(result =>{
+        console.log(result);
+        return result;
+      
+    }).then(result =>{
+        res.redirect('/loginins');
+        return result[0];
+    });
+});
 
 
 
@@ -604,6 +622,25 @@ app.post('/assignGraduation/submit', (req, res) => {
                             });
                           });
 
+
+                          app.get('/createadmin', (req, res) => {
+                            res.render('addadmin');
+                        });
+
+                        app.post('/createAdmin/submit', (req, res) => {
+                            const email = req.body.adminemail;
+                            const password = req.body.adminpassword;
+                            
+                                  console.log(email, password);
+                                    administrator.createAdministratorLogin(email,password,db).then(result =>{
+                                        console.log(result);
+                                       return result;
+                                    }).then(result=>{
+                                        res.redirect('/createadmin');
+                                        return result[0];
+                                    });
+                                  });
+                              
 //################################# NEW STUDENT WORK ################################################
 
 app.get('/studentview', (req, res) => {
@@ -669,26 +706,177 @@ app.post('/enrollClass/submit', (req, res) => {
      });
 
      app.get('/studentenrollments', (req, res) => {
-        res.render('checkenrollments');
+        res.render('getid');
          
          });
+    
 
+
+app.post('/getid/submit',(req,res)=>{
+    const email = req.body.email;
+    let id;
+    student.getStudentIdFromEmail(email,db).then(result=>{
+        console.log(result);
+       id= req.session.user_id = result[1];
+        console.log(id);
+        return result;
+    }).then(result =>{
+        res.render('checkenrollments');
+        return result[0];
+    });
+    
     app.get('/view/enroll',(req,res)=>{
       
-        console.log(req.params.user_name);
-        res.render('checkenrollments');
+        console.log(req.session.user_id);
+        student.getMyCurrentEnrollments(id,db).then(result =>{
+            return result;
+        }).then(result=>{
+            res.render('checkenrollments',{title: ' class', curclass: result});
+            
+        });
     });
 
+    app.get('/view/nextenroll',(req,res)=>{
+      
+        console.log(req.session.user_id);
+        student.getMyNextEnrollments(id,db).then(result =>{
+            return result;
+        }).then(result=>{
+            res.render('checkenrollments',{title: ' class', curclass: result});
+            
+        });
+    });
 
+    app.get('/view/allenroll',(req,res)=>{
+      
+        console.log(req.session.user_id);
+        student.getAllMyEnrollments(id,db).then(result =>{
+            return result;
+        }).then(result=>{
+            res.render('checkenrollments',{title: ' class', curclass: result});
+            
+        });
+    });
+
+    app.get('/view/grade',(req,res)=>{
+      
+        console.log(req.session.user_id);
+        student.viewMyGrades(id,db).then(result =>{
+            return result;
+        }).then(result=>{
+            res.render('checkenrollments',{title: ' class', curclass: result});
+            
+        });
+    });
+
+    app.get('/dropclass/:ClassId',(req,res)=>{
+        var id = req.params.ClassId;
+        console.log(id);
+        var sql = `SELECT * FROM class WHERE Id = ${id}`;
+        db.query(sql, function (err, rows,fields){
+            if(err) throw err;
+            console.log(rows);
+            res.render('drop',{title: 'Drop class', class: rows[0]});
+        });
+        
+    });
+
+    app.post('/dropClass/submit', (req, res) => {
+        const studentId = parseInt(req.body.studentid);
+        const courseId = parseInt(req.body.courseId);
+        const classId = parseInt(req.body.classid);
+        const section = req.body.section;
+        const year = parseInt(req.body.year);
+        const semester = req.body.semester;
+        req.session.user_id = studentId;
+       console.log(classId, courseId, section, year, semester, studentId);
+             student.dropClass(classId, courseId, section, year, semester, studentId, db).then(result =>{
+                 console.log(result);
+                 return result;
+                 
+             }).then(result=>{
+                 res.redirect('/studentclasses');
+                 return result[0];
+             });
+     
+           });    
+});
 
 //######################################instructor work ################################################
 
+app.get('/inswork', (req, res) => {
+    res.render('getinsid');
+     });
+
+     app.post('/getinsid/submit',(req,res)=>{
+        const email = req.body.email;
+        let id;
+        instructor.getInstructorIdFromEmail(email,db).then(result=>{
+            console.log(result);
+           id= req.session.user_id = result[1];
+            console.log(id);
+            return result;
+        }).then(result =>{
+            res.render('inswork');
+            return result[0];
+        });
+        
+        app.get('/view/current/class',(req,res)=>{
+          
+            console.log(req.session.user_id);
+            instructor.getMyCurrentlyTaughtClasses(id,db).then(result =>{
+                return result;
+            }).then(result=>{
+                res.render('inswork',{title: ' class', insclass: result});
+                
+            });
+        });
+    
+        app.get('/view/previous/class',(req,res)=>{
+          
+            console.log(req.session.user_id);
+            instructor.getMyTaughtClasses(id,db).then(result =>{
+                return result;
+            }).then(result=>{
+                res.render('inswork',{title: ' class', insclass: result});
+                
+            });
+        });
+             
+         app.get('/view/assigngrade',(req,res)=>{
+          
+            console.log(req.session.user_id);
+            res.render('assigngrades');
+        });
+
+        app.post('/assigngrade/submit', (req, res) => {
+            const studentid = parseInt(req.body.studentid);
+            const insid = parseInt(req.body.insid);
+            const classid = parseInt(req.body.classid);
+            const grade = req.body.grade;
+           console.log(insid, classid, studentid, grade);
+                 instructor.assignGrade(insid, classid, studentid, grade, db).then(result =>{
+                     console.log(result);
+                     return result;
+                     
+                 }).then(result=>{
+                     res.redirect('/view/assigngrade');
+                     return result[0];
+                 });
+         
+               });    
+    });
 
 
-
-
-
-
+app.get('/viewinsclass',(req,res)=>{
+    allusers.getClasses(db).then(result=>{
+        console.log(result);
+        return result;
+    }).then(result =>{
+        res.render('viewinsclass',{title: 'classes', class: result});
+        return result[0];
+    });
+});
 
 
 
@@ -706,8 +894,8 @@ app.post('/logout', async (req, res) => {
 
 //listen to a certain port on localhost to run the app
 //--------------------------------------------------------
-app.listen(5000, () => {
-    console.log("Server Started on Port 5000");
+app.listen(3000, () => {
+    console.log("Server Started on Port 3000");
 });
 //--------------------------------------------------------
 

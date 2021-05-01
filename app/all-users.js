@@ -53,3 +53,8 @@ function getClasses(con) {
         });
     });
 }
+
+module.exports ={
+getClasses,
+getClassInfo
+};
