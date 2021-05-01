@@ -110,3 +110,9 @@ function getMyTaughtClasses(id, con) { // TODO: Akbar, you can move this
         ])
     });
 }
+
+module.exports = {
+    getGrades,
+    getMyCurrentlyTaughtClasses,
+    getMyTaughtClasses
+};

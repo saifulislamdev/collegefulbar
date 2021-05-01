@@ -7,6 +7,7 @@ const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const administrator = require('./administrator.js');
 const student = require('./student.js');
+const instructor = require('./instructor.js');
 const dotenv = require('dotenv');
 dotenv.config({path: './.env'});
 // set up the database credentials and create connections 
@@ -677,6 +678,23 @@ app.post('/enrollClass/submit', (req, res) => {
         console.log(req.params.user_name);
         res.render('checkenrollments');
     });
+
+
+
+//######################################instructor work ################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
 //if logout button is pressed then log the user out of this session
 //--------------------------------------------------------------------------------
 app.post('/logout', async (req, res) => {
