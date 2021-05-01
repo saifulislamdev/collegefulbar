@@ -303,15 +303,8 @@ function getInstructorIdFromEmail(email, con) {
 module.exports = {
     getMyCurrentlyTaughtClasses,
     getMyTaughtClasses,
-<<<<<<< Updated upstream
     verifyInstructorLogin, // added by Saiful
     getInstructorIdFromEmail, // added by Saiful
     registerAsInstructor, // added by Saiful
     assignGrade // added by Saiful
-=======
-    getInstructorIdFromEmail,
-    verifyInstructorLogin,
-    assignGrade,
-    registerAsInstructor
->>>>>>> Stashed changes
 };

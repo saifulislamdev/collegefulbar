@@ -570,19 +570,11 @@ module.exports = {
     registerAsStudent,
     getCurrentSemClasses,
     getNextSemClasses,
-    getMyCurrentEnrollments,
     getMyNextEnrollments,
-<<<<<<< Updated upstream
     getMyCurrentEnrollments, // added by Saiful
     getMyNextEnrollments, // added by Saiful
     getAllMyEnrollments, // added by Saiful
     viewMyGrades, // added by Saiful
     verifyStudentLogin, // added by Saiful
     getStudentIdFromEmail // added by Saiful
-=======
-    getAllMyEnrollments,
-    viewMyGrades,
-    verifyStudentLogin,
-    getStudentIdFromEmail
->>>>>>> Stashed changes
 };
