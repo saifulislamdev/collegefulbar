@@ -7,15 +7,15 @@ const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const administrator = require('./administrator.js');
 const student = require('./student.js');
-
-
+const dotenv = require('dotenv');
+dotenv.config({path: './.env'});
 // set up the database credentials and create connections 
 // TODO: would be a good idea to put this in db-setup instead and change the imports in administrator.js, all-user.js, db-setup.js, seed.js, student.js, index.js, instructor.js
 const db = mysql.createConnection({ // Changed connection set up to work on my own local network
-    host: 'localhost', 
-    user: 'root',
-    password: '',
-    database: 'College-ful-bar',
+    host: process.env.DATABASE_HOST, 
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE,
     multipleStatements: true
 });
 
@@ -636,6 +636,7 @@ app.post('/enrollClass/submit', (req, res) => {
     const section = req.body.section;
     const year = parseInt(req.body.year);
     const semester = req.body.semester;
+    req.session.user_id = studentId;
    console.log(classId, courseId, section, year, semester, studentId);
          student.enrollInClass(classId, courseId, section, year, semester, studentId, db).then(result =>{
              console.log(result);
@@ -670,20 +671,12 @@ app.post('/enrollClass/submit', (req, res) => {
         res.render('checkenrollments');
          
          });
-     app.post('/checkcurrentenroll/submit', (req, res) => {
-         const id = parseInt(req.body.studentid);
-         console.log(id);
 
-        // student.getMyCurrentEnrollments(id,db).then(result=>{
-        //     console.log(result);
-        //     return result;
-        // }).then(result =>{
-            
-        // res.render('checkenrollments',{title: ' class', class: result});
-    
-        // });
-     });
-
+    app.get('/view/enroll',(req,res)=>{
+      
+        console.log(req.params.user_name);
+        res.render('checkenrollments');
+    });
 //if logout button is pressed then log the user out of this session
 //--------------------------------------------------------------------------------
 app.post('/logout', async (req, res) => {

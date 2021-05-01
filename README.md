@@ -13,7 +13,25 @@ npm start
 ```
 5. Go to [http://localhost:3000](http://localhost:3000)
 
-## Environmental Variables   
+## Environmental Variables
+1. Install "npm install dotenv"
+2. Open up App Directory where Index.js is located
+3. Find ".env" file 
+4. Change DATABASE, DATABASE_PASSWORD, DATABASE_USER, DATABASE_PORT, DATABASE_HOST according to your local set up
+5. Do not Use any quotations in this file.
+6. Example inside the .env file:
+	DATABASE = test
+	DATABASE_PASSWORD = 123
+	DATABASE_USER = root
+	DATABASE_PORT = 3000
+	DATABASE_HOST = localhost
+7. Go to index.js and inside the "CreateConnection" method for mysql connection do the following:
+    host: process.env.DATABASE_HOST, 
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    port: process.env.DATABASE_PORT
+    database: process.env.DATABASE,
+    multipleStatements: true   
 
 ## Tools Implemented
 * NodeJS
