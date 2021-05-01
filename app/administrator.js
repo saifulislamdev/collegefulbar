@@ -805,6 +805,7 @@ function removeProbation(id, con) { // TODO: Akbar, you can move this
     });
 }
 
+<<<<<<< Updated upstream
 // TODO: for student.js
 function getAllMyEnrollments() {
 }
@@ -837,6 +838,68 @@ function verifyInstructorLogin() {
 function verifyStudentLogin() {
 }
 
+=======
+function createAdministratorLogin(email, password, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Allows for an administrator create an account for another administrator
+    Input:
+        email: email address of the new administrator (must be unique; not used by other administrators) [string]
+        password: password for the new administrator's account [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If email is not a valid email, returns [false, 'Email not valid'].
+        If email is already used by an administrator account, returns [false, 'Email address already used by an administrator account'].
+        If there is no error, returns an array with only one element of true (i.e. [true])
+        If there is an error, returns false with the SQL message in an array (i.e. [false, "Data too long for column 'Name' at row 1"]).
+    */
+    // TODO: improvements can be done (not immediately necessary)
+    return new Promise((resolve, reject) => {
+        let emailValidator = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/; // TODO: not necessary to use regex
+        if (!emailValidator.test(email)) return resolve([false, 'Email not valid']); // TODO: update here after changing regex
+        async.waterfall([
+            function verifyUniqueEmail(callback) {
+                con.query("SELECT Email FROM Login WHERE Email = ? AND AccountType = 'Administrator'", email, (err, result) => {
+                    if (result.length > 0) {
+                        callback(null, false);
+                        return resolve([false, 'Email address already used by an administrator account']);
+                    }
+                    callback(null, true);
+                });
+            },
+            function execute(verification) {
+                if (!verification) return;
+                let sql = 'INSERT INTO Login VALUES (?)';
+                con.query(sql, [[email, password, 'Administrator']], (err, result) => {
+                    return err ? resolve([false, err.sqlMessage]) : resolve([true]);
+                });
+            }
+        ]);
+    })
+}
+
+function verifyAdministratorLogin(email, password, con) {
+    /* 
+    Purpose: Verifies administrator login
+    Input:
+        email: email of administrator [string]
+        password: password of administrator [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If there is no matching administrator account with the email and password, returns [false, 'No matching account'].
+        If there is a matching administrator account with the email and password, returns [true].
+    */
+    return new Promise((resolve, reject) => {
+        let sql = "SELECT Email, Password FROM Login WHERE Email = ? AND Password = ? AND AccountType = 'Administrator'";
+        con.query(sql, [email, password], (err, result) => {
+            if (err) return resolve([false]);
+            if (result.length > 0) return resolve([true]); // TODO: result.length > 0 preferred so check other functions (not immediately necessary)
+            return resolve([false, 'No matching account']);
+        })
+    });
+}
+
+>>>>>>> Stashed changes
 // TODO: check if all features are implemented in the proposal
 
 module.exports = {
@@ -867,9 +930,17 @@ module.exports = {
     createStudent,
     assignGraduation,
     assignProbation,
+<<<<<<< Updated upstream
     removeProbation,
     getCurrentSemClasses,
     getNextSemClasses,
     createAdministratorLogin, // added by Saiful
     verifyAdministratorLogin // added by Saiful
+=======
+    getCurrentSemClasses,
+    getNextSemClasses,
+    removeProbation,
+    createAdministratorLogin, // added by Saiful
+    verifyAdministratorLogin, // added by Saiful
+>>>>>>> Stashed changes
 };

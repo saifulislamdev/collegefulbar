@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -6,19 +9,16 @@
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
     <link rel="stylesheet" href="/assets/css/style.css">
-    <title>Student</title>
+    <title>Admin</title>
 </head>
 <header>
     <nav>
-        <h4>Collegefulbar</h4>
         <ul>
             <li><a href="/studentview"></a>Courses</li>
             <li><a href="/studentclasses"></a> Classes</li>
             <li><a href="/studentenrollments"></a> Enrollments</li>
-
             <form method="post">
                 <button formaction="/logout" class="pure-button button-small">logout</button></center>
-
             </form>
         </ul>
     </nav>
@@ -27,9 +27,19 @@
 <body>
 
     <section id="main" class="wrapper">
+        <h3>Please RE-Enter Your Email</h3>
+        <form action="/getid/submit" method="POST">
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Get ID</button>
+        </form>
 
     </section>
-    </section>
-
-
 </body>
+
+
+</html>

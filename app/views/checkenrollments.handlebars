@@ -33,10 +33,18 @@
             <h5>View Enrollments By Semester</h5>
             <table>
                 <tbody>
-                    <br>
+
                     <td><a href="/view/enroll">Current Semester Enrolled </a></td>
-                    <br></br>
                     <td><a href="/view/nextenroll">Next Semester Enrolled </a></td>
+                    <td><a href="/view/allenroll">All Enrolled Classes </a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+
+                    <td><a href="/view/grade">View Grade </a></td>
+
                     </tr>
                 </tbody>
             </table>
@@ -45,14 +53,31 @@
                 <tbody>
                     <tr>
                         <td> Class ID</td>
-                        <td> Student ID </td>
-                        <td> Grade</td>
+                        <td> Course ID</td>
+                        <td> Title</td>
+                        <td> Section</td>
+                        <td> Instructor</td>
+                        <td> Year</td>
+                        <td> Semester</td>
+                        <td> Department</td>
+                        <td> Credits</td>
+                        <td> Cost</td>
+                        <td>Grade</td>
+
                     </tr>
-                    {{#each class}}
+                    {{#each curclass}}
 
                     <tr>
                         <td>{{this.ClassId}}</td>
-                        <td>{{this.StudentId}}</td>
+                        <td>{{this.CourseId}}</td>
+                        <td>{{this.Title}}</td>
+                        <td>{{this.Section}}</td>
+                        <td>{{this.Instructor}}</td>
+                        <td>{{this.Year}}</td>
+                        <td>{{this.Semester}}</td>
+                        <td>{{this.Department}}</td>
+                        <td>{{this.Credits}}</td>
+                        <td>{{this.Cost}}</td>
                         <td>{{this.Grade}}</td>
                         <td><a href="/dropclass/{{ClassId}}">Drop </a></td>
 
@@ -60,6 +85,7 @@
                     {{/each}}
                 </tbody>
             </table>
+
         </div>
 
     </section>

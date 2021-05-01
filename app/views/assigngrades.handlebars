@@ -1,0 +1,60 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Student</title>
+</head>
+<header>
+    <nav>
+        <h4>Collegefulbar</h4>
+        <ul>
+            <li><a href="/inswork"></a>Instructor Changes</li>
+
+            <form method="post">
+                <button formaction="/logout" class="pure-button button-small">logout</button></center>
+
+            </form>
+        </ul>
+    </nav>
+</header>
+
+<body>
+
+    <section id="main" class="wrapper">
+        <div id="class" class="container">
+
+            <div class="card-body">
+                <form action="/assigngrade/submit" method="POST">
+                    <div class="form-group">
+                        <label for="insid"></label>
+                        <input type="text" class="form-control" id="insid" name="insid"
+                            placeholder="Enter Instructor ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="classid"></label>
+                        <input type="text" class="form-control" id="classid" name="classid"
+                            placeholder="Enter Class ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentid"></label>
+                        <input type="text" class="form-control" id="studentid" name="studentid"
+                            placeholder="Enter Student ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="grade"></label>
+                        <input type="text" class="form-control" id="grade" name="grade" placeholder="Enter Grade">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Enter Grade</button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+
+</body>

@@ -1,0 +1,93 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Student</title>
+</head>
+<header>
+    <nav>
+        <h4>Collegefulbar</h4>
+        <ul>
+            <li><a href="/inswork"></a>Instructor Changes</li>
+
+            <form method="post">
+                <button formaction="/logout" class="pure-button button-small">logout</button></center>
+
+            </form>
+        </ul>
+    </nav>
+</header>
+
+<body>
+
+    <section id="main" class="wrapper">
+        <section id="main" class="wrapper">
+            <div id="view" class="container">
+                <h5>View Classes Instructor is Teaching</h5>
+                <table>
+                    <tbody>
+
+                        <td><a href="/view/current/class">Teaching Current Semester </a></td>
+                        <td><a href="/view/previous/class">Taught Past Semesters </a></td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <tbody>
+
+                        <td><a href="/view/assigngrade">Assign Grades </a></td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>List of Classes</h5>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td> Class ID</td>
+                            <td> Course ID</td>
+                            <td> Title</td>
+                            <td> Section</td>
+                            <td> Instructor</td>
+                            <td> Year</td>
+                            <td> Semester</td>
+                            <td> Department</td>
+                            <td> Credits</td>
+                            <td> Cost</td>
+                            <td>Grade</td>
+
+                        </tr>
+                        {{#each insclass}}
+
+                        <tr>
+                            <td>{{this.ClassId}}</td>
+                            <td>{{this.CourseId}}</td>
+                            <td>{{this.Title}}</td>
+                            <td>{{this.Section}}</td>
+                            <td>{{this.Instructor}}</td>
+                            <td>{{this.Year}}</td>
+                            <td>{{this.Semester}}</td>
+                            <td>{{this.Department}}</td>
+                            <td>{{this.Credits}}</td>
+                            <td>{{this.Cost}}</td>
+                            <td>{{this.Grade}}</td>
+
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </section>
+
+
+</body>
