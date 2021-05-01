@@ -4,7 +4,7 @@ Basic student management system for college and universities where students can 
 ## Installation and Execution
 1. Install [NodeJS](https://nodejs.org/en/)
 2. Fill in database information (database name, host, user, and password) in `.env` file ([Environment Variables](#environmental-variables) section for instructions)
-3. Run the script located at `sql/collegefulbar.sql`
+3. Run the script located at `app/collegefulbar.sql`
 4. From the command line 
 ```
 cd app
@@ -17,7 +17,7 @@ npm start
 1. Install "npm install dotenv"
 2. Open up App Directory where Index.js is located
 3. Find ".env" file 
-4. Change DATABASE, DATABASE_PASSWORD, DATABASE_USER, DATABASE_PORT, DATABASE_HOST according to your local set up
+4. Change DATABASE, DATABASE_PASSWORD, DATABASE_USER, DATABASE_HOST according to your local set up
 5. Do not Use any quotations in this file.
 6. Example inside the .env file:
 ```
