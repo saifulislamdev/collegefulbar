@@ -446,5 +446,11 @@ module.exports = {
     getCurrentSemClasses,
     getNextSemClasses,
     getMyCurrentEnrollments,
-    getMyNextEnrollments
+    getMyNextEnrollments,
+    getMyCurrentEnrollments, // added by Saiful
+    getMyNextEnrollments, // added by Saiful
+    getAllMyEnrollments, // added by Saiful
+    viewMyGrades, // added by Saiful
+    verifyStudentLogin, // added by Saiful
+    getStudentIdFromEmail // added by Saiful
 };

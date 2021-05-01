@@ -869,5 +869,7 @@ module.exports = {
     assignProbation,
     removeProbation,
     getCurrentSemClasses,
-    getNextSemClasses
+    getNextSemClasses,
+    createAdministratorLogin, // added by Saiful
+    verifyAdministratorLogin // added by Saiful
 };

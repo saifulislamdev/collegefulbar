@@ -114,5 +114,9 @@ function getMyTaughtClasses(id, con) { // TODO: Akbar, you can move this
 module.exports = {
     getGrades,
     getMyCurrentlyTaughtClasses,
-    getMyTaughtClasses
+    getMyTaughtClasses,
+    verifyInstructorLogin, // added by Saiful
+    getInstructorIdFromEmail, // added by Saiful
+    registerAsInstructor, // added by Saiful
+    assignGrade // added by Saiful
 };
