@@ -20,18 +20,18 @@ npm start
 4. Change DATABASE, DATABASE_PASSWORD, DATABASE_USER, DATABASE_PORT, DATABASE_HOST according to your local set up
 5. Do not Use any quotations in this file.
 6. Example inside the .env file:
-	DATABASE = test
-	DATABASE_PASSWORD = 123
-	DATABASE_USER = root
-	DATABASE_PORT = 3000
-	DATABASE_HOST = localhost
+	6a.DATABASE = test
+	6b.DATABASE_PASSWORD = 123
+	6c.DATABASE_USER = root
+	6d.DATABASE_PORT = 3000
+	6e.DATABASE_HOST = localhost
 7. Go to index.js and inside the "CreateConnection" method for mysql connection do the following:
-    host: process.env.DATABASE_HOST, 
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    port: process.env.DATABASE_PORT
-    database: process.env.DATABASE,
-    multipleStatements: true   
+    7a.host: process.env.DATABASE_HOST, 
+    7b.user: process.env.DATABASE_USER,
+    7c.password: process.env.DATABASE_PASSWORD,
+    7d.port: process.env.DATABASE_PORT
+    7e.database: process.env.DATABASE,
+    7f.multipleStatements: true   
 
 ## Tools Implemented
 * NodeJS
