@@ -1337,16 +1337,115 @@ function registerAsStudent(id, name, ssn, email, password, con) { // TODO: Akbar
     });
 }
 
-// TODO: for administrator.js
-function verifyAdministratorLogin() {
+function verifyAdministratorLogin(email, password, con) {
+    /* 
+    Purpose: Verifies administrator login
+    Input:
+        email: email of administrator [string]
+        password: password of administrator [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If there is no matching administrator account with the email and password, returns [false, 'No matching account'].
+        If there is a matching administrator account with the email and password, returns [true].
+    */
+    return new Promise((resolve, reject) => {
+        let sql = "SELECT Email, Password FROM Login WHERE Email = ? AND Password = ? AND AccountType = 'Administrator'";
+        con.query(sql, [email, password], (err, result) => {
+            if (err) return resolve([false]);
+            if (result.length > 0) return resolve([true]); // TODO: result.length > 0 preferred so check other functions (not immediately necessary)
+            return resolve([false, 'No matching account']);
+        })
+    });
 }
 
 // TODO: for instructor.js
-function verifyInstructorLogin() {
+function verifyInstructorLogin(email, password, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Verifies instructor login
+    Input:
+        email: email of instructor [string]
+        password: password of instructor [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If there is no matching instructor account with the email and password, returns [false, 'No matching account'].
+        If there is a matching instructor account with the email and password, returns [true].
+    */
+    return new Promise((resolve, reject) => {
+        let sql = "SELECT Email, Password FROM Login WHERE Email = ? AND Password = ? AND AccountType = 'Instructor'";
+        con.query(sql, [email, password], (err, result) => {
+            if (err) return resolve([false]);
+            if (result.length > 0) return resolve([true]); // TODO: result.length > 0 preferred so check other functions (not immediately necessary)
+            return resolve([false, 'No matching account']);
+        })
+    });
 }
 
 // TODO: for student.js
-function verifyStudentLogin() {
+function verifyStudentLogin(email, password, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Verifies student login
+    Input:
+        email: email of student [string]
+        password: password of student [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If there is no matching student account with the email and password, returns [false, 'No matching account'].
+        If there is a matching student account with the email and password, returns [true].
+    */
+    // TODO: 3 verifyLogin functions can be formed into one helper function
+    return new Promise((resolve, reject) => {
+        let sql = "SELECT Email, Password FROM Login WHERE Email = ? AND Password = ? AND AccountType = 'Student'";
+        con.query(sql, [email, password], (err, result) => {
+            if (err) return resolve([false]);
+            if (result.length > 0) return resolve([true]); // TODO: result.length > 0 preferred so check other functions (not immediately necessary)
+            return resolve([false, 'No matching account']);
+        })
+    });
+}
+
+// TODO: for student.js
+function getStudentIdFromEmail(email, con) { // TODO: Akbar, you can move this
+    /* 
+    Purpose: Gets the corresponding student ID number of an email address
+    Input:
+        email: email of student [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If no student is matched with the email address, returns [false, 'No matching student'].
+        If a student is matched with the email address, returns an array where the second element contains the id of the student (i.e. [true, 123]).
+    */
+    return new Promise((resolve, reject) => {
+        con.query('SELECT Id FROM Student WHERE Email = ?', email, (err, result) => { // TODO: don't declare let sql where there are short queries
+            if (err) return resolve([false]);
+            if (result.length === 0) return resolve([false, 'No matching student']);
+            return resolve([true, result[0]['Id']]);
+        });
+    });
+}
+
+// TODO: for instructor.js
+function getInstructorIdFromEmail(email, con) {
+    /* 
+    Purpose: Gets the corresponding instructor ID number of an email address
+    Input:
+        email: email of instructor [string]
+        con: connection to DB (result of createConnection() method)
+    Output: [Promise]
+        If an error occurs, returns an array with only one element of false (i.e. [false])
+        If no instructor is matched with the email address, returns [false, 'No matching instructor'].
+        If an instructor is matched with the email address, returns an array where the second element contains the id of the instructor (i.e. [true, 123]).
+    */
+    return new Promise((resolve, reject) => {
+        con.query('SELECT Id FROM Instructor WHERE Email = ?', email, (err, result) => { // TODO: don't declare let sql where there are short queries
+            if (err) return resolve([false]);
+            if (result.length === 0) return resolve([false, 'No matching instructor']);
+            return resolve([true, result[0]['Id']]);
+        });
+    });
 }
 
 // TODO: check if all features are implemented in the proposal
@@ -1386,5 +1485,10 @@ module.exports = {
     viewMyGrades, // added by Saiful
     createAdministratorLogin, // added by Saiful
     registerAsInstructor, // added by Saiful
-    registerAsStudent // added by Saiful
+    registerAsStudent, // added by Saiful
+    verifyAdministratorLogin, // added by Saiful
+    verifyInstructorLogin, // added by Saiful
+    verifyStudentLogin, // added by Saiful
+    getStudentIdFromEmail, // added by Saiful
+    getInstructorIdFromEmail // added by Saiful
 };
