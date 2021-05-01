@@ -7,15 +7,15 @@ const mysql = require('mysql');
 const bcrypt = require('bcryptjs');
 const administrator = require('./administrator.js');
 const student = require('./student.js');
-
-
+const dotenv = require('dotenv');
+dotenv.config({path: './.env'});
 // set up the database credentials and create connections 
 // TODO: would be a good idea to put this in db-setup instead and change the imports in administrator.js, all-user.js, db-setup.js, seed.js, student.js, index.js, instructor.js
 const db = mysql.createConnection({ // Changed connection set up to work on my own local network
-    host: 'localhost', 
-    user: 'root',
-    password: '',
-    database: 'College-ful-bar',
+    host: process.env.DATABASE_HOST, 
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE,
     multipleStatements: true
 });
 
