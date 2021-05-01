@@ -88,7 +88,7 @@ function createTables(con) {
 }
 
 // creates all tables needed for the app
-createTables(con);
+// createTables(con);
 
 function deleteTable(sql, successIndicator, con) {
     /* helper function for deleteTables() */
@@ -119,7 +119,7 @@ function deleteTables(con) {
 }
 
 // delete all tables in the app
-//deleteTables(con);
+// deleteTables(con);
 
 app.listen(5001, () => {
     console.log("Server Started on Port 5001");
