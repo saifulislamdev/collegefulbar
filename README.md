@@ -12,14 +12,14 @@ $ cd Collegefulbar/app/
 4. For mock data, import/dump the script located at `app/collegefulbar.sql` into the database that is setup in the .env file
 5. From the command line (in app/ folder)
 ```
-npm install
-npm start
+$ npm install
+$ npm start
 ```
 6. Go to [http://localhost:3000](http://localhost:3000)
 7. If step 4 was performed, you can use the following account logins with the app:
-* Administrator, Email: admin@gmail.com', Password: admin
-* Instructor, Email: john.anthony.connor@gmail.com, Password: nothingbeatstwizzle
-* Student, Email: nysaifulislam@gmail.com, Password: akbarisawesome
+* For administrator: Email: admin@gmail.com, Password: admin
+* For instructor: Email: john.anthony.connor@gmail.com, Password: nothingbeatstwizzle
+* For student: Email: nysaifulislam@gmail.com, Password: akbarisawesome
 
 ## Environmental Variables
 1. Create .env file (in app/ folder)
