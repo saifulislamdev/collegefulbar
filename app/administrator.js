@@ -1078,6 +1078,7 @@ function verifyAdministratorLogin(email, password, con) {
     return new Promise((resolve, reject) => {
         let sql = "SELECT Email, Password FROM Login WHERE Email = ? AND Password = ? AND AccountType = 'Administrator'";
         con.query(sql, [email, password], (err, result) => {
+            console.log("Error",err);
             if (err) return resolve([false]);
             if (result.length > 0) return resolve([true]); // TODO: result.length > 0 preferred so check other functions (not immediately necessary)
             return resolve([false, 'No matching account']);
