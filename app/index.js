@@ -1037,7 +1037,6 @@ app.get("/viewinsclass", (req, res) => {
 //if logout button is pressed then log the user out of this session
 //--------------------------------------------------------------------------------
 app.post("/logout", async (req, res) => {
-  console.log("Before Logging out: ", req.session.user_name);
   delete req.session.user_name;
   console.log("After Logging out the username is: " + req.session.user_name);
   res.redirect("/");
