@@ -5,8 +5,8 @@ Basic student management system for colleges and universities where students and
 1. Install [NodeJS](https://nodejs.org/en/)
 2. Clone this project
 ```
-$ git clone https://github.com/saifulislamny/Collegefulbar
-$ cd Collegefulbar/app/
+$ git clone https://github.com/saifulislamdev/collegefulbar
+$ cd collegefulbar/app/
 ```
 3. Fill in your MySQL database information (database host, user, password, and name) in `.env` file ([Environment Variables](#environmental-variables) section for instructions)
 4. For mock data, import/dump the script located at `app/collegefulbar.sql` into the database that is setup in the .env file
